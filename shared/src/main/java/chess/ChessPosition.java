@@ -23,7 +23,6 @@ public class ChessPosition {
      */
     public int getRow() {
         return this.row;
-    }
 
     /**
      * @return which column this position is in
