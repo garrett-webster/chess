@@ -1,6 +1,7 @@
 package chess;
 
 import java.util.Collection;
+import java.util.Objects;
 
 /**
  * Represents a single chess piece
@@ -9,6 +10,25 @@ import java.util.Collection;
  * signature of the existing methods.
  */
 public class ChessPiece {
+    ChessGame.TeamColor pieceColor;
+    PieceType type;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ChessPiece that = (ChessPiece) o;
+        return getTeamColor() == that.getTeamColor() && type == that.type;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getTeamColor(), type);
+    }
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
     }
@@ -29,14 +49,14 @@ public class ChessPiece {
      * @return Which team this chess piece belongs to
      */
     public ChessGame.TeamColor getTeamColor() {
-        throw new RuntimeException("Not implemented");
+        return this.pieceColor;
     }
 
     /**
      * @return which type of chess piece this piece is
      */
     public PieceType getPieceType() {
-        throw new RuntimeException("Not implemented");
+        return this.type;
     }
 
     /**
