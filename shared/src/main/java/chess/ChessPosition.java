@@ -22,7 +22,8 @@ public class ChessPosition {
         entry(4, "d"),
         entry(5, "e"),
         entry(6, "f"),
-        entry(7, "g")
+        entry(7, "g"),
+        entry(8, "h")
     );
 
     public ChessPosition(int row, int col) {

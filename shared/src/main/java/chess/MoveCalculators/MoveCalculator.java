@@ -12,6 +12,7 @@ public class MoveCalculator {
     ChessPosition position;
     ChessBoard board;
     ChessPiece piece;
+    ArrayList<ChessMove> moves = new ArrayList<>();
 
     MoveCalculator (ChessPosition position, ChessBoard board) {
         this.position = position;
@@ -41,23 +42,53 @@ public class MoveCalculator {
     }
 
     public Collection<ChessMove> returnMoves() {
-        return new ArrayList<>();
+        return moves;
     }
 
-    public void addStraightMoves(Collection<ChessMove> moves) {
+    public void addStraightMoves() {
         int row = this.position.getRow();
         int col = this.position.getColumn();
 
-        for (int i = row; i < 8; i++) {
-            if (isCollision(i, col)){
-                if (this.board.getPiece(new ChessPosition(i, col)).getTeamColor() == this.piece.getTeamColor()) {
-//                    RETURN THIS MOVE
-                } else {
-//                    DON'T RETURN THIS MOVE
-                }
-               break;
+        // Positive vertical moves
+        for (int i = row + 1; i < 9; i++) {
+            if (checkCollisionAndAddMove(i, col)) {
+                break;
             }
         }
+
+        // Negative vertical moves
+        for (int i = row - 1; i > 0; i--) {
+            if (checkCollisionAndAddMove(i, col)) {
+                break;
+            }
+        }
+
+        // Positive horizontal moves
+        for (int i = col + 1; i < 9; i++) {
+            if (checkCollisionAndAddMove(row, i)) {
+                break;
+            }
+        }
+
+        // Negative horizontal moves
+        for (int i = col - 1; i > 0; i--) {
+            if (checkCollisionAndAddMove(row, i)) {
+                break;
+            }
+        }
+    }
+
+    // Returns true if there is a collision at the passed space and adds the move, unless the collision is with a
+    // piece of the same team color
+    private boolean checkCollisionAndAddMove(int row, int col){
+        if (isCollision(row, col)){
+            if (this.board.getPiece(new ChessPosition(row, col)).getTeamColor() == this.piece.getTeamColor()) {
+                moves.add(new ChessMove(this.position, new ChessPosition(row, col), null));
+            }
+            return true;
+        }
+        moves.add(new ChessMove(this.position, new ChessPosition(row, col), null));
+        return false;
     }
 
     private boolean isCollision(int row, int col) {
