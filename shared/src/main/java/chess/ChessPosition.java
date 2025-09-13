@@ -3,8 +3,6 @@ package chess;
 import java.util.Map;
 import java.util.Objects;
 
-import static java.util.Map.entry;
-
 /**
  * Represents a single square position on a chess board
  * <p>
@@ -15,15 +13,15 @@ public class ChessPosition {
     int row;
     int col;
 
-    Map<Integer, String> colMap = Map.ofEntries(
-        entry(1, "a"),
-        entry(2, "b"),
-        entry(3, "c"),
-        entry(4, "d"),
-        entry(5, "e"),
-        entry(6, "f"),
-        entry(7, "g"),
-        entry(8, "h")
+    Map<Integer, String> colMap = Map.of(
+        1, "a",
+        2, "b",
+        3, "c",
+        4, "d",
+        5, "e",
+        6, "f",
+        7, "g",
+        8, "h"
     );
 
     public ChessPosition(int row, int col) {
