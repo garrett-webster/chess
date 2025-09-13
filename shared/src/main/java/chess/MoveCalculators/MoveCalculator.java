@@ -82,7 +82,7 @@ public class MoveCalculator {
     // piece of the same team color
     private boolean checkCollisionAndAddMove(int row, int col){
         if (isCollision(row, col)){
-            if (this.board.getPiece(new ChessPosition(row, col)).getTeamColor() == this.piece.getTeamColor()) {
+            if (this.board.getPiece(new ChessPosition(row, col)).getTeamColor() != this.piece.getTeamColor()) {
                 moves.add(new ChessMove(this.position, new ChessPosition(row, col), null));
             }
             return true;
