@@ -78,6 +78,25 @@ public class MoveCalculator {
         }
     }
 
+    public void addDiagMoves() {
+        int row = this.position.getRow();
+        int col = this.position.getColumn();
+        int[][] diag_modifiers = {
+                {1,1},
+                {1,-1},
+                {-1,1},
+                {-1,-1}
+        };
+
+        for (int[] mod: diag_modifiers){
+            for(int i = 1; row+i*mod[0] < 9 && row+i*mod[0] >0 && col+i*mod[1] < 9  && col+i*mod[1] > 0; i++) {
+                if (checkCollisionAndAddMove(row+i*mod[0],col+i*mod[1])) {
+                    break;
+                }
+            }
+        }
+    }
+
     // Returns true if there is a collision at the passed space and adds the move, unless the collision is with a
     // piece of the same team color
     private boolean checkCollisionAndAddMove(int row, int col){
