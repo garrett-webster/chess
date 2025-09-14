@@ -49,31 +49,23 @@ public class MoveCalculator {
         int row = this.position.getRow();
         int col = this.position.getColumn();
 
-        // Positive vertical moves
-        for (int i = row + 1; i < 9; i++) {
-            if (checkCollisionAndAddMove(i, col)) {
-                break;
-            }
-        }
+        int[][] modifiers = {
+                {1,0},
+                {-1,0},
+                {0,1},
+                {0,-1}
+        };
 
-        // Negative vertical moves
-        for (int i = row - 1; i > 0; i--) {
-            if (checkCollisionAndAddMove(i, col)) {
-                break;
-            }
-        }
+        for (int[] mod: modifiers) {
+            for(int i = 1; i < 8; i++){
+                int newRow = row+i*mod[0];
+                int newCol = col+i*mod[1];
 
-        // Positive horizontal moves
-        for (int i = col + 1; i < 9; i++) {
-            if (checkCollisionAndAddMove(row, i)) {
-                break;
-            }
-        }
-
-        // Negative horizontal moves
-        for (int i = col - 1; i > 0; i--) {
-            if (checkCollisionAndAddMove(row, i)) {
-                break;
+                if(newRow > 0 && newRow < 9 && newCol > 0 && newCol <9) {
+                    if (checkCollisionAndAddMove(newRow, newCol)) {
+                        break;
+                    }
+                }
             }
         }
     }
