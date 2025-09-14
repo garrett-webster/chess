@@ -89,6 +89,20 @@ public class MoveCalculator {
         }
     }
 
+    public void addMovesFromModifiers(int[][] modifiers) {
+        int row = this.position.getRow();
+        int col = this.position.getColumn();
+
+        for (int[] mod: modifiers) {
+            int newRow = row+mod[0];
+            int newCol = col+mod[1];
+
+            if(newRow > 0 && newRow < 9 && newCol > 0 && newCol <9) {
+                checkCollisionAndAddMove(row+mod[0], col+mod[1]);
+            }
+        }
+    }
+
     // Returns true if there is a collision at the passed space and adds the move, unless the collision is with a
     // piece of the same team color
     boolean checkCollisionAndAddMove(int row, int col){
