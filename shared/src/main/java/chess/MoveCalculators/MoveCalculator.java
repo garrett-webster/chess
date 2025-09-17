@@ -61,7 +61,7 @@ public class MoveCalculator {
                 int newRow = row+i*mod[0];
                 int newCol = col+i*mod[1];
 
-                if(newRow > 0 && newRow < 9 && newCol > 0 && newCol <9) {
+                if(isInRange(newRow, newCol)) {
                     if (checkCollisionAndAddMove(newRow, newCol)) {
                         break;
                     }
@@ -81,7 +81,7 @@ public class MoveCalculator {
         };
 
         for (int[] mod: diag_modifiers){
-            for(int i = 1; row+i*mod[0] < 9 && row+i*mod[0] >0 && col+i*mod[1] < 9  && col+i*mod[1] > 0; i++) {
+            for(int i = 1; isInRange(row+i*mod[0], col+i*mod[1]); i++) {
                 if (checkCollisionAndAddMove(row+i*mod[0],col+i*mod[1])) {
                     break;
                 }
@@ -97,7 +97,7 @@ public class MoveCalculator {
             int newRow = row+mod[0];
             int newCol = col+mod[1];
 
-            if(newRow > 0 && newRow < 9 && newCol > 0 && newCol <9) {
+            if(isInRange(newRow, newCol)) {
                 checkCollisionAndAddMove(row+mod[0], col+mod[1]);
             }
         }
@@ -116,7 +116,11 @@ public class MoveCalculator {
         return false;
     }
 
-    private boolean isCollision(int row, int col) {
+    boolean isCollision(int row, int col) {
         return this.board.squares[row - 1][col - 1] != null;
+    }
+
+    boolean isInRange(int row, int col) {
+        return row > 0 && row < 9 && col > 0 && col <9;
     }
 }
