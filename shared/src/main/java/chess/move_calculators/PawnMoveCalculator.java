@@ -64,4 +64,5 @@ ChessPiece.PieceType[] promotableTypes = {
             }
         }
     }
+
 }
