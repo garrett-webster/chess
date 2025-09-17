@@ -1,4 +1,4 @@
-package chess.MoveCalculators;
+package chess.move_calculators;
 
 import chess.ChessBoard;
 import chess.ChessMove;
@@ -73,14 +73,14 @@ public class MoveCalculator {
     public void addDiagMoves() {
         int row = this.position.getRow();
         int col = this.position.getColumn();
-        int[][] diag_modifiers = {
+        int[][] diagModifiers = {
                 {1,1},
                 {1,-1},
                 {-1,1},
                 {-1,-1}
         };
 
-        for (int[] mod: diag_modifiers){
+        for (int[] mod: diagModifiers){
             for(int i = 1; isInRange(row+i*mod[0], col+i*mod[1]); i++) {
                 if (checkCollisionAndAddMove(row+i*mod[0],col+i*mod[1])) {
                     break;
