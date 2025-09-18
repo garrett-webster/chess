@@ -103,6 +103,7 @@ public class ChessBoard {
                 }
             }
         }
+        return null;
     }
 
     @Override
