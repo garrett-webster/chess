@@ -17,6 +17,7 @@ public class ChessGame {
     public ChessGame() {
         teamTurn = TeamColor.WHITE;
         board = new ChessBoard();
+        board.resetBoard();
     }
 
     /**
@@ -71,7 +72,20 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        ChessPosition kingPosition = board.getKingPosition(teamColor);
+        ArrayList<ChessPosition> oppositeTeamPiecePositions = board.getPiecePositions(teamColor);
+
+        for (ChessPosition position: oppositeTeamPiecePositions) {
+            ChessPiece piece = board.getPiece(position);
+
+            for (ChessMove move: piece.pieceMoves(board, position)) {
+                if (move.endPosition.equals(kingPosition)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -102,6 +116,7 @@ public class ChessGame {
      */
     public void setBoard(ChessBoard board) {
         this.board = board;
+        System.out.println("DEBUG");
     }
 
     /**

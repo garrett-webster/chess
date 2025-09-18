@@ -15,7 +15,6 @@ public class ChessBoard {
 
     public ChessBoard() {
         this.squares = new ChessPiece[8][8];
-        this.resetBoard();
     }
 
     /**
@@ -84,7 +83,7 @@ public class ChessBoard {
         ArrayList<ChessPosition> oppositeTeamPiecePositions = new ArrayList<>();
 
         for (int i = 0; i < 8; i++){
-            for (int j = 0; j < 8; i++){
+            for (int j = 0; j < 8; j++){
                 ChessPiece piece = squares[i][j];
                 if (piece != null && piece.getTeamColor() != teamColor) {
                     oppositeTeamPiecePositions.add(new ChessPosition(i + 1, j + 1));
@@ -97,9 +96,9 @@ public class ChessBoard {
 
     public ChessPosition getKingPosition(ChessGame.TeamColor teamColor) {
         for (int i = 0; i < 8; i++){
-            for (int j = 0; j < 8; i++){
+            for (int j = 0; j < 8; j++){
                 ChessPiece piece = squares[i][j];
-                if (piece != null && piece.getTeamColor() != teamColor && piece.type == ChessPiece.PieceType.KING) {
+                if (piece != null && piece.getTeamColor() == teamColor && piece.type == ChessPiece.PieceType.KING) {
                    return new ChessPosition(i + 1, j + 1);
                 }
             }
