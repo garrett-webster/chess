@@ -79,6 +79,32 @@ public class ChessBoard {
         this.squares = defaultBoard;
     }
 
+    public ArrayList<ChessPosition> getPiecePositions(ChessGame.TeamColor teamColor) {
+        ArrayList<ChessPosition> oppositeTeamPiecePositions = new ArrayList<>();
+
+        for (int i = 0; i < 8; i++){
+            for (int j = 0; j < 8; i++){
+                ChessPiece piece = squares[i][j];
+                if (piece != null && piece.getTeamColor() != teamColor) {
+                    oppositeTeamPiecePositions.add(new ChessPosition(i + 1, j + 1));
+                }
+            }
+        }
+
+        return oppositeTeamPiecePositions;
+    }
+
+    public ChessPosition getKingPosition(ChessGame.TeamColor teamColor) {
+        for (int i = 0; i < 8; i++){
+            for (int j = 0; j < 8; i++){
+                ChessPiece piece = squares[i][j];
+                if (piece != null && piece.getTeamColor() != teamColor && piece.type == ChessPiece.PieceType.KING) {
+                   return new ChessPosition(i + 1, j + 1);
+                }
+            }
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
