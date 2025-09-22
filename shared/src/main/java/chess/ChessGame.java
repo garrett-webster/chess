@@ -79,9 +79,9 @@ public class ChessGame {
      */
     public boolean isInCheck(TeamColor teamColor) {
         ChessPosition kingPosition = board.getKingPosition(teamColor);
-        ArrayList<ChessPosition> oppositeTeamPiecePositions = board.getPiecePositions(teamColor);
+        ArrayList<ChessPosition> piecePositions = board.getPiecePositions();
 
-        for (ChessPosition position: oppositeTeamPiecePositions) {
+        for (ChessPosition position: piecePositions) {
             ChessPiece piece = board.getPiece(position);
 
             for (ChessMove move: piece.pieceMoves(board, position)) {

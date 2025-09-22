@@ -92,13 +92,13 @@ public class ChessBoard {
         this.squares = defaultBoard;
     }
 
-    public ArrayList<ChessPosition> getPiecePositions(ChessGame.TeamColor teamColor) {
+    public ArrayList<ChessPosition> getPiecePositions() {
         ArrayList<ChessPosition> oppositeTeamPiecePositions = new ArrayList<>();
 
         for (int i = 0; i < 8; i++){
             for (int j = 0; j < 8; j++){
                 ChessPiece piece = squares[i][j];
-                if (piece != null && piece.getTeamColor() != teamColor) {
+                if (piece != null) {
                     oppositeTeamPiecePositions.add(new ChessPosition(i + 1, j + 1));
                 }
             }
