@@ -111,10 +111,11 @@ public class ChessGame {
 
         for (ChessPosition position: piecePositions) {
             ChessPiece piece = board.getPiece(position);
-
-            for (ChessMove move: piece.pieceMoves(board, position)) {
-                if (move.endPosition.equals(kingPosition)) {
-                    return true;
+            if (piece.getTeamColor() != teamColor) {
+                for (ChessMove move: piece.pieceMoves(board, position)) {
+                    if (move.endPosition.equals(kingPosition)) {
+                        return true;
+                    }
                 }
             }
         }
