@@ -119,6 +119,10 @@ public class ChessBoard {
         return null;
     }
 
+    public void makeMove(ChessMove move) {
+        addPiece(move.endPosition, removePiece(move.startPosition));
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
