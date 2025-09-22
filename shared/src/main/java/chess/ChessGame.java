@@ -2,6 +2,7 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Objects;
 
 /**
@@ -23,7 +24,10 @@ public class ChessGame {
     public ChessGame(ChessGame toCopy, ChessMove moveToCopy) {
         teamTurn = toCopy.getTeamTurn();
         board = new ChessBoard(toCopy.getBoard());
-        board.makeMove(moveToCopy);
+
+        if (moveToCopy != null) {
+            board.makeMove(moveToCopy);
+        }
     }
 
     /**
@@ -130,7 +134,24 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        ArrayList<ChessPosition> piecePositions = board.getPiecePositions();
+
+        for (ChessPosition position: piecePositions) {
+            for (ChessMove move: board.getPiece(position).pieceMoves(board, position)) {
+                ChessGame tempGame = new ChessGame(this, null);
+                try {
+                    tempGame.makeMove(move);
+                } catch(InvalidMoveException e) {
+                    System.out.println("Invalid move caught in isInCheckmate");
+                }
+
+                if(!tempGame.isInCheck(teamColor)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -151,7 +172,6 @@ public class ChessGame {
      */
     public void setBoard(ChessBoard board) {
         this.board = board;
-        System.out.println("DEBUG");
     }
 
     /**
