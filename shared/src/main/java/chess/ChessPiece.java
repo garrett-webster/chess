@@ -20,6 +20,11 @@ public class ChessPiece {
         this.type = type;
     }
 
+    public ChessPiece(ChessPiece toCopy) {
+        this.pieceColor = toCopy.getTeamColor();
+        this.type = toCopy.getPieceType();
+    }
+
     /**
      * The various different chess piece options
      */

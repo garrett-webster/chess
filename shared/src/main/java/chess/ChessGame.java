@@ -20,6 +20,12 @@ public class ChessGame {
         board.resetBoard();
     }
 
+    public ChessGame(ChessGame toCopy, ChessMove moveToCopy) {
+        teamTurn = toCopy.getTeamTurn();
+        board = new ChessBoard(toCopy.getBoard());
+        board.makeMove(moveToCopy);
+    }
+
     /**
      * @return Which team's turn it is
      */
