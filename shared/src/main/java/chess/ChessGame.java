@@ -2,7 +2,6 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.Objects;
 
 /**
@@ -66,10 +65,8 @@ public class ChessGame {
         if (piece == null) { return null; }
 
         Collection<ChessMove> moves = piece.pieceMoves(board, startPosition);
-        Iterator<ChessMove> iterator = moves.iterator();
 
         moves.removeIf(move -> {
-
             ChessMove moveToCheck = new ChessMove(move.getStartPosition(), move.getEndPosition(), move.getPromotionPiece());
             ChessGame tempGame = new ChessGame(this, moveToCheck);
             return tempGame.isInCheck(piece.getTeamColor());
@@ -162,7 +159,20 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        if (isInCheck(teamColor)) {
+            return false;
+        }
+
+        ArrayList<ChessPosition> piecePositions = board.getPiecePositions();
+
+        for (ChessPosition position: piecePositions) {
+            ChessPiece piece = board.getPiece(position);
+            if (piece.getTeamColor() == teamColor && !validMoves(position).isEmpty()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
