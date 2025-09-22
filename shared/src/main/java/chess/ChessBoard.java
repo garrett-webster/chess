@@ -120,7 +120,14 @@ public class ChessBoard {
     }
 
     public void makeMove(ChessMove move) {
-        addPiece(move.endPosition, removePiece(move.startPosition));
+        ChessPiece piece = removePiece(move.startPosition);
+
+        // Handles pawn promotion
+        if (move.promotionPiece != null) {
+            piece = new ChessPiece(piece.getTeamColor(), move.promotionPiece);
+        }
+
+        addPiece(move.endPosition, piece);
     }
 
     @Override
