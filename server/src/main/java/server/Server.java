@@ -1,6 +1,9 @@
 package server;
 
 import io.javalin.*;
+import io.javalin.http.Context;
+import io.javalin.http.Handler;
+import org.jetbrains.annotations.NotNull;
 
 public class Server {
 
@@ -11,6 +14,13 @@ public class Server {
 
         // Register your endpoints and exception handlers here.
 
+        javalin.delete("/db", new Handler() {
+            @Override
+            public void handle(@NotNull Context context) throws Exception {
+                dbDelete(context);
+            }
+        });
+
     }
 
     public int run(int desiredPort) {
@@ -20,5 +30,9 @@ public class Server {
 
     public void stop() {
         javalin.stop();
+    }
+
+    private void dbDelete(Context context) {
+        System.out.println("Delete called");
     }
 }
