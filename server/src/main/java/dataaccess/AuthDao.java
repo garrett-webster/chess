@@ -2,24 +2,14 @@ package dataaccess;
 
 import model.AuthData;
 
-public class AuthDao {
-    public void createAuth(AuthData authData) throws DataAccessException {
-        return;
-    }
+public interface AuthDao {
+    public void createAuth(AuthData authData) throws DataAccessException;
 
-    public void getAuth(int authId) throws DataAccessException {
-        return;
-    }
+    public void getAuth(int authId) throws DataAccessException;
 
-    public void updateAuth(AuthData authData) throws DataAccessException {
-        return;
-    }
+    public void updateAuth(AuthData authData) throws DataAccessException;
 
-    public void deleteAuth(int authId) throws DataAccessException {
-        return;
-    }
+    public void deleteAuth(int authId) throws DataAccessException;
 
-    public void clear() {
-        return;
-    }
+    public void clear();
 }

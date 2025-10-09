@@ -3,36 +3,20 @@ package dataaccess;
 import chess.ChessGame;
 import model.GameData;
 
-public class GameDao {
-    public void createGame(GameData GameData) throws DataAccessException {
-        return;
-    }
+public interface GameDao {
+    public void createGame(GameData GameData) throws DataAccessException;
 
-    public GameData getGame(int gameId) throws DataAccessException {
-        return null;
-    }
+    public GameData getGame(int gameId) throws DataAccessException;
 
-    public GameData getGame (String gameName) {
-        return null;
-    }
+    public GameData getGame (String gameName);
 
-    public GameData listGames() {
-        return null;
-    }
+    public GameData listGames();
 
-    public void updateGame(GameData gameData) throws DataAccessException {
-        return;
-    }
+    public void updateGame(GameData gameData) throws DataAccessException;
 
-    public void addPlayerToGame(int playerId, int gameId, ChessGame.TeamColor team) {
-        return;
-    }
+    public void addPlayerToGame(int playerId, int gameId, ChessGame.TeamColor team);
 
-    public void deleteGame(int gameId) throws DataAccessException {
-        return;
-    }
+    public void deleteGame(int gameId) throws DataAccessException;
 
-    public void clear() {
-        return;
-    }
+    public void clear();
 }

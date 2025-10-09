@@ -2,32 +2,18 @@ package dataaccess;
 
 import model.UserData;
 
-public class UserDao {
-    public void createUser(UserData userData) throws DataAccessException {
-        return;
-    }
+public interface UserDao {
+    public void createUser(UserData userData) throws DataAccessException;
 
-    public UserData getUser(int userId) throws DataAccessException {
-        return null;
-    }
+    public UserData getUser(int userId) throws DataAccessException;
 
-    public UserData getUser(String userName) {
-        return null;
-    }
+    public UserData getUser(String userName);
 
-    public void updateUser(UserData userData) throws DataAccessException {
-        return;
-    }
+    public void updateUser(UserData userData) throws DataAccessException;
 
-    public void deleteUser(int userId) throws DataAccessException {
-        return;
-    }
+    public void deleteUser(int userId) throws DataAccessException;
 
-    public UserData validateUser(String username, String password) {
-        return null;
-    }
+    public UserData validateUser(String username, String password);
 
-    public void clear() {
-        return;
-    }
+    public void clear();
 }
