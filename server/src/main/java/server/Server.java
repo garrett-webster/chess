@@ -14,12 +14,8 @@ public class Server {
 
         // Register your endpoints and exception handlers here.
 
-        javalin.delete("/db", new Handler() {
-            @Override
-            public void handle(@NotNull Context context) throws Exception {
-                dbDelete(context);
-            }
-        });
+        javalin.delete("/db", this::dbDelete);
+        javalin.post("/user", this::userCreate);
 
     }
 
