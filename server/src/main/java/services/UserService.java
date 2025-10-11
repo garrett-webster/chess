@@ -1,13 +1,14 @@
 package services;
 
 import requestobjects.RegisterRequest;
+import requestobjects.RegisterResult;
 
-public class UserService extends Service {
+public class UserService {
     public void clearUsers() {
 
     }
 
-    public static String register(RegisterRequest request) {
-        return buildJson("username", request.username(), "authToken", "dummy token");
+    public static RegisterResult register(RegisterRequest request) {
+        return new RegisterResult(request.username(), "dummy token");
     }
 }

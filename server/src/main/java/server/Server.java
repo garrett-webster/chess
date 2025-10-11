@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import io.javalin.*;
 import io.javalin.http.Context;
 import requestobjects.RegisterRequest;
+import requestobjects.RegisterResult;
 import services.UserService;
 
 public class Server {
@@ -34,8 +35,7 @@ public class Server {
 
     private void userCreate(Context context){
         var serializer = new Gson();
-//        RegisterRequest registerRequest = new RegisterRequest()
-        context.result(UserService.register(serializer.fromJson(context.body(), RegisterRequest.class)));
-//        buildJson("username", json.get("username").toString(), "authToken", "dummy token") );
+        RegisterResult result = UserService.register(serializer.fromJson(context.body(), RegisterRequest.class));
+        context.result(result.toJson());
     }
 }
