@@ -1,9 +1,9 @@
 package server;
 
+import com.google.gson.Gson;
 import io.javalin.*;
 import io.javalin.http.Context;
-import io.javalin.http.Handler;
-import org.jetbrains.annotations.NotNull;
+import java.util.Map;
 
 public class Server {
 
@@ -33,6 +33,23 @@ public class Server {
     }
 
     private void dbDelete(Context context) {
-        System.out.println("Delete called");
+        context.result("{}");
+    }
+
+    private void userCreate(Context context){
+        var serializer = new Gson();
+        Map json = serializer.fromJson(context.body(), Map.class);
+        context.result(buildJson("username", json.get("username").toString(), "authToken", "dummy token") );
+    }
+
+    private String buildJson(String... keysAndVals) {
+        Map<String, String> pairs = new java.util.HashMap<>(Map.of());
+        for (int i = 1; i < keysAndVals.length; i++){
+            if (i%2 == 1) {
+                pairs.put(keysAndVals[i-1], keysAndVals[i]);
+            }
+        }
+
+        return new Gson().toJson(pairs);
     }
 }
