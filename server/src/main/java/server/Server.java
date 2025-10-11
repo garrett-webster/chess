@@ -3,10 +3,10 @@ package server;
 import com.google.gson.Gson;
 import io.javalin.*;
 import io.javalin.http.Context;
-import java.util.Map;
+import requestobjects.RegisterRequest;
+import services.UserService;
 
 public class Server {
-
     private final Javalin javalin;
 
     public Server() {
@@ -34,18 +34,8 @@ public class Server {
 
     private void userCreate(Context context){
         var serializer = new Gson();
-        Map json = serializer.fromJson(context.body(), Map.class);
-        context.result(buildJson("username", json.get("username").toString(), "authToken", "dummy token") );
-    }
-
-    private String buildJson(String... keysAndVals) {
-        Map<String, String> pairs = new java.util.HashMap<>(Map.of());
-        for (int i = 1; i < keysAndVals.length; i++){
-            if (i%2 == 1) {
-                pairs.put(keysAndVals[i-1], keysAndVals[i]);
-            }
-        }
-
-        return new Gson().toJson(pairs);
+//        RegisterRequest registerRequest = new RegisterRequest()
+        context.result(UserService.register(serializer.fromJson(context.body(), RegisterRequest.class)));
+//        buildJson("username", json.get("username").toString(), "authToken", "dummy token") );
     }
 }
