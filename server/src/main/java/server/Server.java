@@ -16,7 +16,7 @@ public class Server {
         // Register your endpoints and exception handlers here.
 
         javalin.delete("/db", this::dbDelete);
-        javalin.post("/user", this::userCreate);
+        javalin.post("/user", userService::create);
 
     }
 
@@ -31,11 +31,5 @@ public class Server {
 
     private void dbDelete(Context context) {
         context.result("{}");
-    }
-
-    private void userCreate(Context context){
-        var serializer = new Gson();
-        RegisterResult result = UserService.register(serializer.fromJson(context.body(), RegisterRequest.class));
-        context.result(result.toJson());
     }
 }
