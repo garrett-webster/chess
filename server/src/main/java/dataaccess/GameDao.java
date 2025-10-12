@@ -3,7 +3,7 @@ package dataaccess;
 import chess.ChessGame;
 import model.GameData;
 
-public interface GameDao {
+public interface GameDao extends DAO{
     public void createGame(GameData GameData) throws DataAccessException;
 
     public GameData getGame(int gameId) throws DataAccessException;

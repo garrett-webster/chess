@@ -2,7 +2,7 @@ package dataaccess;
 
 import model.AuthData;
 
-public interface AuthDao {
+public interface AuthDao extends DAO {
     public void createAuth(AuthData authData) throws DataAccessException;
 
     public void getAuth(int authId) throws DataAccessException;
