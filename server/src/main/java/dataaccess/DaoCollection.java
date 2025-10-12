@@ -1,10 +1,10 @@
 package dataaccess;
 
-import dataaccess.local.localUserDao;
+import dataaccess.local.LocalUserDao;
 
 public class DaoCollection {
     public UserDao userDao;
     public DaoCollection() {
-        this.userDao = new localUserDao();
+        this.userDao = new LocalUserDao();
     }
 }

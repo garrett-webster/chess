@@ -1,14 +1,14 @@
 package server;
 
-import com.google.gson.Gson;
+import dataaccess.DaoCollection;
 import io.javalin.*;
 import io.javalin.http.Context;
-import requestobjects.RegisterRequest;
-import requestobjects.RegisterResult;
 import services.UserService;
 
 public class Server {
     private final Javalin javalin;
+    DaoCollection DAOs = new DaoCollection();
+    UserService userService = new UserService(DAOs);
 
     public Server() {
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
