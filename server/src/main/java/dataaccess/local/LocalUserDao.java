@@ -11,11 +11,12 @@ public class LocalUserDao implements UserDao {
     public Map<String, UserData> users = new HashMap<>();
 
     @Override
-    public void createUser(UserData userData) throws DataAccessException {
-        if (!users.containsKey(userData.username())) {
-            users.put(userData.username(), userData);
-        } else {
-            throw new DataAccessException("User with username " + userData.username() + " already exists.");
-        }
+    public void createUser(UserData userData) {
+        users.put(userData.username(), userData);
+    }
+
+    @Override
+    public UserData getUser(String username) {
+        return users.get(username);
     }
 }

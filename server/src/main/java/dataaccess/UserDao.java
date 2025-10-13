@@ -6,6 +6,8 @@ public interface UserDao extends DAO {
     public void createUser(UserData userData) throws DataAccessException;
 
 //    public UserData getUser(int userId) throws DataAccessException;
+
+    public UserData getUser(String username) throws DataAccessException;
 //
 //    public UserData getUser(String userName);
 //
