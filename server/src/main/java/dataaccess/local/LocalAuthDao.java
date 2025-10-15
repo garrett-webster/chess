@@ -16,4 +16,8 @@ public class LocalAuthDao implements AuthDao {
     public boolean authenticateToken(String username, String token) {
         return authTokens.containsKey(username) && Objects.equals(authTokens.get(username), token);
     }
+
+    public void clear() {
+        authTokens = new HashMap<>();
+    }
 }

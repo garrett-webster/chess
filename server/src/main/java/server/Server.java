@@ -23,6 +23,8 @@ public class Server {
         javalin.delete("/db", userHandlers::clear)
                 .post("/user", userHandlers::create);
 
+        javalin.delete("/db", new AppService(DAOs)::clear)
+                .post("/user", userHandlers::create)
     }
 
     public int run(int desiredPort) {
@@ -32,10 +34,6 @@ public class Server {
 
     public void stop() {
         javalin.stop();
-    }
-
-    private void dbDelete(Context context) {
-        context.result("{}");
     }
 
     public static String buildJson(String... keysAndVals) {

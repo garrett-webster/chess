@@ -9,5 +9,5 @@ public interface AuthDao extends DAO {
 //
 //    public void deleteAuth(int authId) throws DataAccessException;
 //
-//    public void clear();
+    void clear();
 }
