@@ -4,7 +4,10 @@ import dataaccess.DaoCollection;
 import dataaccess.DataAccessException;
 import dataaccess.exceptions.AlreadyTakenException;
 import dataaccess.exceptions.BadRequestException;
+import dataaccess.exceptions.UserNotValidatedException;
 import model.UserData;
+import requestobjects.LoginRequest;
+import requestobjects.LoginResult;
 import requestobjects.RegisterRequest;
 import requestobjects.RegisterResult;
 
@@ -20,11 +23,10 @@ public class UserService {
         this.DAOs.userDao.clear();
     }
 
-    public RegisterResult register(RegisterRequest request) throws AlreadyTakenException, DataAccessException {
+    public RegisterResult register(RegisterRequest request)
+            throws AlreadyTakenException, DataAccessException, BadRequestException {
+        checkForBadRequest(request.username(), request.password(), request.email());
         UserData user = new UserData(request.username(), request.password(), request.email());
-
-        if (user.username() == null || user.password() == null || user.email() == null) throw new
-                BadRequestException("A field was missing");
 
 
         if (DAOs.userDao.getUser(user.username()) != null) throw new
@@ -35,5 +37,22 @@ public class UserService {
         return new RegisterResult(request.username(), token);
     }
 
-//    TODO: Move this ot it's own handler class
+    public LoginResult login(LoginRequest request) throws UserNotValidatedException, BadRequestException {
+        checkForBadRequest(request.username(), request.password());
+
+        if (!DAOs.userDao.validateWithPassword(request.username(), request.password())){
+            throw new UserNotValidatedException("Error: unauthorized");
+        }
+
+        String token = authService.generateNewToken(request.username());
+        return new LoginResult(request.username(), token);
+    }
+
+    private void checkForBadRequest(String... requestFields) throws BadRequestException {
+        for (String requestField: requestFields) {
+            if (requestField == null) {
+                throw new BadRequestException("A field was missing");
+            }
+        }
+    }
 }

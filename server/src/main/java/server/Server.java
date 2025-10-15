@@ -4,7 +4,7 @@ import Handlers.UserHandlers;
 import com.google.gson.Gson;
 import dataaccess.DaoCollection;
 import io.javalin.*;
-import io.javalin.http.Context;
+import services.AppService;
 import services.AuthService;
 import services.UserService;
 
@@ -20,11 +20,9 @@ public class Server {
     public Server() {
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
 
-        javalin.delete("/db", userHandlers::clear)
-                .post("/user", userHandlers::create);
-
         javalin.delete("/db", new AppService(DAOs)::clear)
                 .post("/user", userHandlers::create)
+                .post("/session", userHandlers::login);
     }
 
     public int run(int desiredPort) {

@@ -8,6 +8,8 @@ public interface UserDao extends DAO {
 //    public UserData getUser(int userId) throws DataAccessException;
 
     UserData getUser(String username) throws DataAccessException;
+
+    boolean validateWithPassword(String username, String password);
 //
 //    public UserData getUser(String userName);
 //
