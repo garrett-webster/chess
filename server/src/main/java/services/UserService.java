@@ -23,6 +23,10 @@ public class UserService {
     public RegisterResult register(RegisterRequest request) throws AlreadyTakenException, DataAccessException {
         UserData user = new UserData(request.username(), request.password(), request.email());
 
+        if (user.username() == null || user.password() == null || user.email() == null) throw new
+                BadRequestException("A field was missing");
+
+
         if (DAOs.userDao.getUser(user.username()) != null) throw new
                 AlreadyTakenException("Username " + user.username() + " already exists");
 
