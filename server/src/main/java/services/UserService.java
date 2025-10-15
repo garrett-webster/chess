@@ -1,15 +1,12 @@
 package services;
 
-import com.google.gson.Gson;
 import dataaccess.DaoCollection;
 import dataaccess.DataAccessException;
 import dataaccess.exceptions.AlreadyTakenException;
-import io.javalin.http.Context;
+import dataaccess.exceptions.BadRequestException;
 import model.UserData;
 import requestobjects.RegisterRequest;
 import requestobjects.RegisterResult;
-
-import static server.Server.buildJson;
 
 public class UserService {
     public DaoCollection DAOs;
@@ -19,7 +16,8 @@ public class UserService {
         authService = new AuthService(DAOs);
     }
 
-    public void clearUsers() {
+    public void clear() {
+        this.DAOs.userDao.clear();
     }
 
     public RegisterResult register(RegisterRequest request) throws AlreadyTakenException, DataAccessException {

@@ -1,6 +1,5 @@
 package dataaccess.local;
 
-import dataaccess.DataAccessException;
 import dataaccess.UserDao;
 import model.UserData;
 
@@ -18,5 +17,10 @@ public class LocalUserDao implements UserDao {
     @Override
     public UserData getUser(String username) {
         return users.get(username);
+    }
+
+    @Override
+    public void clear() {
+        users = new HashMap<>();
     }
 }

@@ -20,7 +20,7 @@ public class Server {
     public Server() {
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
 
-        javalin.delete("/db", this::dbDelete)
+        javalin.delete("/db", userHandlers::clear)
                 .post("/user", userHandlers::create);
 
     }

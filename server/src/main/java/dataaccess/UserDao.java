@@ -17,5 +17,5 @@ public interface UserDao extends DAO {
 //
 //    public UserData validateUser(String username, String password);
 //
-//    public void clear();
+    void clear();
 }

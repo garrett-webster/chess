@@ -3,6 +3,7 @@ package Handlers;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import dataaccess.exceptions.AlreadyTakenException;
+import dataaccess.exceptions.BadRequestException;
 import io.javalin.http.Context;
 import requestobjects.RegisterRequest;
 import requestobjects.RegisterResult;
@@ -14,6 +15,11 @@ public class UserHandlers {
     UserService userService;
     public UserHandlers(UserService userService) {
         this.userService = userService;
+    }
+
+    public void clear(Context context) {
+        userService.clear();
+        context.result("{}");
     }
 
     public void create(Context context) {
