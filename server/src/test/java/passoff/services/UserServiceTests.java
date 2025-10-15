@@ -6,17 +6,15 @@ import dataaccess.exceptions.AlreadyTakenException;
 import dataaccess.local.LocalUserDao;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import requestobjects.RegisterRequest;
 import services.UserService;
 
-import java.util.Objects;
-
 public class UserServiceTests {
     public static UserService userService;
-    @BeforeAll
-    public static void setup() {
+    @BeforeEach
+    public void setup() {
         DaoCollection DAOs = new DaoCollection();
         userService = new UserService(DAOs);
     }
