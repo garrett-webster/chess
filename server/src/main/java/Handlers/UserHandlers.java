@@ -13,6 +13,7 @@ import requestobjects.RegisterResult;
 import services.UserService;
 
 import static server.Server.buildJson;
+import static server.Server.setErrorContext;
 
 public class UserHandlers {
     UserService userService;
@@ -31,14 +32,11 @@ public class UserHandlers {
             RegisterResult result = userService.register(serializer.fromJson(context.body(), RegisterRequest.class));
             context.result(buildJson("username", result.username(), "authToken", result.authToken()));
         } catch (AlreadyTakenException e) {
-            context.result(buildJson("message", "403 Already Taken Error: Username already taken."));
-            context.status(403);
+            setErrorContext(context, "403 Already Taken Error: Username already taken.", 403);
         } catch (DataAccessException e) {
-            context.result(buildJson("message", "500 Data Access Error: Failed to create new user"));
-            context.status(500);
+            setErrorContext(context,"500 Data Access Error: Failed to create new user", 500);
         } catch (BadRequestException e) {
-            context.result(buildJson("message",  "400 Bad Request Error: Some field was missing"));
-            context.status(400);
+            setErrorContext(context,"400 Bad Request Error: Some field was missing", 400);
         }
     }
 
@@ -47,11 +45,9 @@ public class UserHandlers {
             LoginResult result = userService.login(serializer.fromJson(context.body(), LoginRequest.class));
             context.result(buildJson("username", result.username(), "authToken", result.authToken()));
         } catch (BadRequestException e) {
-            context.result(buildJson("message",  "400 Bad Request Error: Some field was missing"));
-            context.status(400);
+            setErrorContext(context,"400 Bad Request Error: Some field was missing", 400);
         } catch (UserNotValidatedException e) {
-            context.result(buildJson("message", "401 Unauthorized Error: User could not be logged in"));
-            context.status(401);
+            setErrorContext(context, "401 Unauthorized Error: User could not be logged in", 401);
         }
     }
 }

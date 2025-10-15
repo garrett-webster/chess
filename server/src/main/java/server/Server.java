@@ -4,6 +4,7 @@ import Handlers.UserHandlers;
 import com.google.gson.Gson;
 import dataaccess.DaoCollection;
 import io.javalin.*;
+import io.javalin.http.Context;
 import services.AppService;
 import services.AuthService;
 import services.UserService;
@@ -43,5 +44,10 @@ public class Server {
         }
 
         return new Gson().toJson(pairs);
+    }
+
+    public static void setErrorContext(Context context, String message, int status) {
+        context.result(buildJson("message", message));
+        context.status(status);
     }
 }
