@@ -1,6 +1,5 @@
 package Handlers;
 
-import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import dataaccess.exceptions.UserNotValidatedException;
 import io.javalin.http.Context;
@@ -10,7 +9,6 @@ import static server.Server.setErrorContext;
 
 public class AuthHandlers {
     AuthService authService;
-    Gson serializer = new Gson();
     public AuthHandlers(AuthService authService) {
         this.authService = authService;
     }

@@ -11,10 +11,6 @@ public class AuthService {
         this.DAOs = DAOs;
     }
 
-    public void clearAuthTokens() {
-
-    }
-
     public String generateNewToken(String username) {
         String newToken = UUID.randomUUID().toString();
 

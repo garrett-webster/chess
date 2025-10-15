@@ -4,7 +4,6 @@ import dataaccess.AuthDao;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class LocalAuthDao implements AuthDao {
     public Map<String, String> authTokens = new HashMap<>();
