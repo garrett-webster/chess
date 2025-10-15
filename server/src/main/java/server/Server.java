@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import dataaccess.DaoCollection;
 import io.javalin.*;
 import io.javalin.http.Context;
+import services.AuthService;
 import services.UserService;
 
 import java.util.Map;
@@ -11,6 +12,7 @@ import java.util.Map;
 public class Server {
     private final Javalin javalin;
     DaoCollection DAOs = new DaoCollection();
+    AuthService authService = new AuthService(DAOs);
     UserService userService = new UserService(DAOs);
 
     public Server() {
