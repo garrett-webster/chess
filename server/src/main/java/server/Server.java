@@ -1,5 +1,6 @@
 package server;
 
+import Handlers.UserHandlers;
 import com.google.gson.Gson;
 import dataaccess.DaoCollection;
 import io.javalin.*;
@@ -14,14 +15,13 @@ public class Server {
     DaoCollection DAOs = new DaoCollection();
     AuthService authService = new AuthService(DAOs);
     UserService userService = new UserService(DAOs);
+    UserHandlers userHandlers = new UserHandlers(userService);
 
     public Server() {
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
 
-        // Register your endpoints and exception handlers here.
-
         javalin.delete("/db", this::dbDelete)
-                .post("/user", userService::create);
+                .post("/user", userHandlers::create);
 
     }
 

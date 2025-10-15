@@ -34,17 +34,4 @@ public class UserService {
     }
 
 //    TODO: Move this ot it's own handler class
-    public void create(Context context){
-        var serializer = new Gson();
-        try {
-            RegisterResult result = register(serializer.fromJson(context.body(), RegisterRequest.class));
-            context.result(buildJson("username", result.username(), "authtoken", result.authToken()));
-        } catch (AlreadyTakenException e) {
-            context.result("{\"message\": \"403 Already Taken: Username already taken.\"");
-            context.status(403);
-        } catch (DataAccessException e) {
-            context.result("{\"message\": \"500 Data Access Exception: Failed to create new user\"");
-            context.status(500);
-        }
-    }
 }
