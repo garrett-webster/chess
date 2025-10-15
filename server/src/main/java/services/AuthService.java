@@ -1,5 +1,7 @@
 package services;
 import dataaccess.DaoCollection;
+import dataaccess.DataAccessException;
+import dataaccess.exceptions.UserNotValidatedException;
 
 import java.util.UUID;
 
@@ -18,5 +20,10 @@ public class AuthService {
 
         this.DAOs.authDao.addAuthToken(username, newToken);
         return newToken;
+    }
+
+    public void logout(String token) throws DataAccessException, UserNotValidatedException {
+        if (DAOs.authDao.authenticateToken(token) == null) throw new UserNotValidatedException("Not validated");
+        DAOs.authDao.remove(token);
     }
 }

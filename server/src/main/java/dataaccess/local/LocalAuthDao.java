@@ -10,14 +10,19 @@ public class LocalAuthDao implements AuthDao {
     public Map<String, String> authTokens = new HashMap<>();
 
     public void addAuthToken(String username, String token) {
-        authTokens.put(username, token);
+        authTokens.put(token, username);
     }
 
-    public boolean authenticateToken(String username, String token) {
-        return authTokens.containsKey(username) && Objects.equals(authTokens.get(username), token);
+    public String authenticateToken(String token) {
+        return authTokens.getOrDefault(token, null);
     }
 
     public void clear() {
         authTokens = new HashMap<>();
+    }
+
+    @Override
+    public void remove(String token) {
+        authTokens.remove(token);
     }
 }

@@ -1,5 +1,6 @@
 package server;
 
+import Handlers.AuthHandlers;
 import Handlers.UserHandlers;
 import com.google.gson.Gson;
 import dataaccess.DaoCollection;
@@ -15,6 +16,7 @@ public class Server {
     private final Javalin javalin;
     DaoCollection DAOs = new DaoCollection();
     AuthService authService = new AuthService(DAOs);
+    AuthHandlers authHandlers = new AuthHandlers(authService);
     UserService userService = new UserService(DAOs);
     UserHandlers userHandlers = new UserHandlers(userService);
 
@@ -23,7 +25,8 @@ public class Server {
 
         javalin.delete("/db", new AppService(DAOs)::clear)
                 .post("/user", userHandlers::create)
-                .post("/session", userHandlers::login);
+                .post("/session", userHandlers::login)
+                .delete("/session", authHandlers::logout);
     }
 
     public int run(int desiredPort) {
