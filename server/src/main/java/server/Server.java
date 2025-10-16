@@ -1,6 +1,7 @@
 package server;
 
 import Handlers.AuthHandlers;
+import Handlers.GameHandlers;
 import Handlers.UserHandlers;
 import com.google.gson.Gson;
 import dataaccess.DaoCollection;
@@ -8,6 +9,7 @@ import io.javalin.*;
 import io.javalin.http.Context;
 import services.AppService;
 import services.AuthService;
+import services.GameService;
 import services.UserService;
 
 import java.util.Map;
@@ -19,6 +21,8 @@ public class Server {
     AuthHandlers authHandlers = new AuthHandlers(authService);
     UserService userService = new UserService(DAOs);
     UserHandlers userHandlers = new UserHandlers(userService);
+    GameService gameService = new GameService(DAOs);
+    GameHandlers gameHandlers = new GameHandlers(gameService);
 
     public Server() {
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
@@ -27,6 +31,8 @@ public class Server {
                 .post("/user", userHandlers::create)
                 .post("/session", userHandlers::login)
                 .delete("/session", authHandlers::logout);
+                .delete("/session", authHandlers::logout)
+                .post("/game", gameHandlers::create);
     }
 
     public int run(int desiredPort) {
@@ -38,11 +44,11 @@ public class Server {
         javalin.stop();
     }
 
-    public static String buildJson(String... keysAndVals) {
-        Map<String, String> pairs = new java.util.HashMap<>(Map.of());
+    public static String buildJson(Object... keysAndVals) {
+        Map<String, Object> pairs = new java.util.HashMap<>(Map.of());
         for (int i = 1; i < keysAndVals.length; i++){
             if (i%2 == 1) {
-                pairs.put(keysAndVals[i-1], keysAndVals[i]);
+                pairs.put((String) keysAndVals[i-1], keysAndVals[i]);
             }
         }
 

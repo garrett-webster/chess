@@ -5,7 +5,7 @@ import dataaccess.exceptions.UserNotValidatedException;
 
 import java.util.UUID;
 
-public class AuthService {
+public class AuthService extends Service {
     public DaoCollection DAOs;
     public AuthService(DaoCollection DAOs) {
         this.DAOs = DAOs;
