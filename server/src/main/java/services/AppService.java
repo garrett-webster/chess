@@ -3,7 +3,7 @@ package services;
 import dataaccess.DaoCollection;
 import io.javalin.http.Context;
 
-public class AppService {
+public class AppService extends Service{
     public DaoCollection DAOs;
 
     public AppService(DaoCollection DAOs) {

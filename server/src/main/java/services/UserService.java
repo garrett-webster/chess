@@ -11,7 +11,7 @@ import requestobjects.LoginResult;
 import requestobjects.RegisterRequest;
 import requestobjects.RegisterResult;
 
-public class UserService {
+public class UserService extends Service{
     public DaoCollection DAOs;
     public AuthService authService;
     public UserService(DaoCollection DAOs) {
@@ -46,13 +46,5 @@ public class UserService {
 
         String token = authService.generateNewToken(request.username());
         return new LoginResult(request.username(), token);
-    }
-
-    private void checkForBadRequest(String... requestFields) throws BadRequestException {
-        for (String requestField: requestFields) {
-            if (requestField == null) {
-                throw new BadRequestException("A field was missing");
-            }
-        }
     }
 }
