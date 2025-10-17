@@ -6,6 +6,7 @@ import dataaccess.exceptions.BadRequestException;
 import dataaccess.exceptions.UserNotValidatedException;
 import requestobjects.CreateRequest;
 import requestobjects.CreateResult;
+import requestobjects.ListResult;
 import services.GameService;
 
 import io.javalin.http.Context;
@@ -20,12 +21,14 @@ public class GameHandlers {
         this.gameService = gameService;
     }
 
-//    public void list(Context context) {
-//        try {
-//            gameService.
-//        } catch (Exception e) {
-//        }
-//    }
+    public void list(Context context) {
+        try {
+            ListResult result = gameService.list(context.header("authorization"));
+            context.result(buildJson("games", result.games()));
+        } catch (UserNotValidatedException e) {
+            setErrorContext(context, "401 Unauthorized Error: Unauthorized", 401);
+        }
+    }
 
     public void create(Context context) {
         try {

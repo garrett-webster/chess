@@ -1,9 +1,14 @@
 package dataaccess;
 
+import model.GameData;
 import requestobjects.CreateRequest;
+
+import java.util.List;
 
 public interface GameDao extends DAO{
     int create(CreateRequest request) throws DataAccessException;
+
+    List<GameData> list();
 
 //    public GameData getGame(int gameID) throws DataAccessException;
 //
@@ -17,5 +22,5 @@ public interface GameDao extends DAO{
 //
 //    public void deleteGame(int gameID) throws DataAccessException;
 //
-//    public void clear();
+    void clear();
 }

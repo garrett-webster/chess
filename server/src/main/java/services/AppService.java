@@ -13,5 +13,6 @@ public class AppService extends Service{
     public void clear(Context context) {
         this.DAOs.userDao.clear();
         this.DAOs.authDao.clear();
+        this.DAOs.gameDao.clear();
     }
 }

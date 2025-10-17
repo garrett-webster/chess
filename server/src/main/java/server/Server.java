@@ -30,9 +30,9 @@ public class Server {
         javalin.delete("/db", new AppService(DAOs)::clear)
                 .post("/user", userHandlers::create)
                 .post("/session", userHandlers::login)
-                .delete("/session", authHandlers::logout);
                 .delete("/session", authHandlers::logout)
-                .post("/game", gameHandlers::create);
+                .post("/game", gameHandlers::create)
+                .get("/game", gameHandlers::list);
     }
 
     public int run(int desiredPort) {

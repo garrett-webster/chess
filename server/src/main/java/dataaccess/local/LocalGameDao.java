@@ -5,7 +5,9 @@ import dataaccess.GameDao;
 import model.GameData;
 import requestobjects.CreateRequest;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class LocalGameDao implements GameDao {
@@ -20,5 +22,13 @@ public class LocalGameDao implements GameDao {
 
         nextId++;
         return nextId-1;
+    }
+
+    public List<GameData> list() {
+        return new ArrayList<>(games.values());
+    }
+
+    public void clear() {
+        games = new HashMap<>();
     }
 }
