@@ -1,4 +1,4 @@
-package passoff.services;
+package passoff.service;
 
 import dataaccess.DaoCollection;
 import org.junit.jupiter.api.Assertions;
