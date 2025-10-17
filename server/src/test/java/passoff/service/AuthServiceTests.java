@@ -11,10 +11,10 @@ public class AuthServiceTests {
     public static AuthService authService;
     @BeforeEach
     public void setup() {
-        DaoCollection DAOs = new DaoCollection();
-        authService = new AuthService(DAOs);
-        authService.DAOs.authDao.addAuthToken("Garrett", "dummytoken1");
-        authService.DAOs.authDao.addAuthToken("Jerome", "dummytoken2");
+        DaoCollection daos = new DaoCollection();
+        authService = new AuthService(daos);
+        authService.daos.authDao.addAuthToken("Garrett", "dummytoken1");
+        authService.daos.authDao.addAuthToken("Jerome", "dummytoken2");
     }
 
     @Nested

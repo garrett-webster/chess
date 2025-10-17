@@ -19,8 +19,8 @@ public class UserServiceTests {
     public static UserService userService;
     @BeforeEach
     public void setup() {
-        DaoCollection DAOs = new DaoCollection();
-        userService = new UserService(DAOs);
+        DaoCollection daos = new DaoCollection();
+        userService = new UserService(daos);
     }
 
     @Nested
@@ -32,8 +32,8 @@ public class UserServiceTests {
             );
             userService.register(request);
 
-            LocalUserDao DAO = (LocalUserDao) userService.DAOs.userDao;
-            UserData user = DAO.users.get("Garrett");
+            LocalUserDao dao = (LocalUserDao) userService.daos.userDao;
+            UserData user = dao.users.get("Garrett");
 
             Assertions.assertEquals("Garrett", user.username());
             Assertions.assertEquals("password123", user.password());

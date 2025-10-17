@@ -12,15 +12,15 @@ import requestobjects.RegisterRequest;
 import requestobjects.RegisterResult;
 
 public class UserService extends Service{
-    public DaoCollection DAOs;
+    public DaoCollection daos;
     public AuthService authService;
-    public UserService(DaoCollection DAOs) {
-        this.DAOs = DAOs;
-        authService = new AuthService(DAOs);
+    public UserService(DaoCollection daos) {
+        this.daos = daos;
+        authService = new AuthService(daos);
     }
 
     public void clear() {
-        this.DAOs.userDao.clear();
+        this.daos.userDao.clear();
     }
 
     public RegisterResult register(RegisterRequest request)
@@ -29,10 +29,11 @@ public class UserService extends Service{
         UserData user = new UserData(request.username(), request.password(), request.email());
 
 
-        if (DAOs.userDao.getUser(user.username()) != null) throw new
-                AlreadyTakenException("Username " + user.username() + " already exists");
+        if (daos.userDao.getUser(user.username()) != null) {
+            throw new AlreadyTakenException("Username " + user.username() + " already exists");
+        }
 
-        DAOs.userDao.createUser(user);
+        daos.userDao.createUser(user);
         String token = authService.generateNewToken(user.username());
         return new RegisterResult(request.username(), token);
     }
@@ -40,7 +41,7 @@ public class UserService extends Service{
     public LoginResult login(LoginRequest request) throws UserNotValidatedException, BadRequestException {
         checkForBadRequest(request.username(), request.password());
 
-        if (!DAOs.userDao.validateWithPassword(request.username(), request.password())){
+        if (!daos.userDao.validateWithPassword(request.username(), request.password())){
             throw new UserNotValidatedException("Error: unauthorized");
         }
 

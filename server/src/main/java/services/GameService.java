@@ -20,13 +20,13 @@ public class GameService extends Service{
     }
 
     public ListResult list(String token) throws UserNotValidatedException {
-        if(DAOs.authDao.authenticateToken(token) == null) throw new UserNotValidatedException("Not validated");
+        if(DAOs.authDao.authenticateToken(token) == null){throw new UserNotValidatedException("Not validated");}
 
         return new ListResult(DAOs.gameDao.list());
     }
 
     public CreateResult create(String token, CreateRequest request) throws DataAccessException, BadRequestException {
-        if(DAOs.authDao.authenticateToken(token) == null) throw new UserNotValidatedException("Not validated");
+        if(DAOs.authDao.authenticateToken(token) == null) {throw new UserNotValidatedException("Not validated");}
         checkForBadRequest(request.gameName());
 
         int id = DAOs.gameDao.create(request);
@@ -37,7 +37,7 @@ public class GameService extends Service{
     public void join(String token, JoinRequest request) throws UserNotValidatedException, AlreadyTakenException {
         String username = DAOs.authDao.authenticateToken(token);
 
-        if(username == null) throw new UserNotValidatedException("Not validated");
+        if(username == null) {throw new UserNotValidatedException("Not validated");}
         checkForBadRequest(request.playerColor(), request.gameID(), DAOs.gameDao.getGame(request.gameID()));
         if(!Objects.equals(request.playerColor(), "WHITE") && !Objects.equals(request.playerColor(), "BLACK")){
             throw new NotAValidColorException("Not a valid color");

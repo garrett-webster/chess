@@ -1,8 +1,8 @@
 package server;
 
-import Handlers.AuthHandlers;
-import Handlers.GameHandlers;
-import Handlers.UserHandlers;
+import handlers.AuthHandlers;
+import handlers.GameHandlers;
+import handlers.UserHandlers;
 import com.google.gson.Gson;
 import dataaccess.DaoCollection;
 import io.javalin.*;
