@@ -15,8 +15,8 @@ import java.util.Objects;
 
 public class GameService extends Service{
     DaoCollection daos;
-    public GameService(DaoCollection DAOs) {
-        this.daos = DAOs;
+    public GameService(DaoCollection daos) {
+        this.daos = daos;
     }
 
     public ListResult list(String token) throws UserNotValidatedException {
