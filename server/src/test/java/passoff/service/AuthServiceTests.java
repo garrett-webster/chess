@@ -1,6 +1,7 @@
 package passoff.service;
 
 import dataaccess.DaoCollection;
+import dataaccess.exceptions.BadRequestException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -20,13 +21,26 @@ public class AuthServiceTests {
     @Nested
     class LogoutTests {
         @Test
-        public void successfulLogout() {
+        public void successfulLogoutTest() {
             Assertions.assertDoesNotThrow(() ->  authService.logout("dummytoken1"));
         }
 
         @Test
-        public void unsuccessfulLogout() {
+        public void unsuccessfulLogoutTest() {
             Assertions.assertThrows(Exception.class, () ->  authService.logout("dummytoken"));
+        }
+    }
+
+    @Nested
+    class GenerateTokenTests {
+        @Test
+        public void generateTokenWithUsername() {
+           Assertions.assertNotNull(authService.generateNewToken("Garrett"));
+        }
+
+        @Test
+        public void generateTokenWithoutUsername() {
+            Assertions.assertThrows(BadRequestException.class, () -> authService.generateNewToken(null));
         }
     }
 }

@@ -1,6 +1,7 @@
 package services;
 import dataaccess.DaoCollection;
 import dataaccess.DataAccessException;
+import dataaccess.exceptions.BadRequestException;
 import dataaccess.exceptions.UserNotValidatedException;
 
 import java.util.UUID;
@@ -12,6 +13,7 @@ public class AuthService extends Service {
     }
 
     public String generateNewToken(String username) {
+        if (username == null) { throw new BadRequestException("No username supplied");}
         String newToken = UUID.randomUUID().toString();
 
         this.daos.authDao.addAuthToken(username, newToken);
