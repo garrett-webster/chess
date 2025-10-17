@@ -3,8 +3,8 @@ package services;
 import dataaccess.exceptions.BadRequestException;
 
 public class Service {
-    void checkForBadRequest(String... requestFields) throws BadRequestException {
-        for (String requestField: requestFields) {
+    void checkForBadRequest(Object... requestFields) throws BadRequestException {
+        for (Object requestField: requestFields) {
             if (requestField == null) {
                 throw new BadRequestException("A field was missing");
             }
