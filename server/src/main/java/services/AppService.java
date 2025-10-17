@@ -4,15 +4,15 @@ import dataaccess.DaoCollection;
 import io.javalin.http.Context;
 
 public class AppService extends Service{
-    public DaoCollection DAOs;
+    public DaoCollection daos;
 
-    public AppService(DaoCollection DAOs) {
-        this.DAOs = DAOs;
+    public AppService(DaoCollection daos) {
+        this.daos = daos;
     }
 
     public void clear(Context context) {
-        this.DAOs.userDao.clear();
-        this.DAOs.authDao.clear();
-        this.DAOs.gameDao.clear();
+        this.daos.userDao.clear();
+        this.daos.authDao.clear();
+        this.daos.gameDao.clear();
     }
 }

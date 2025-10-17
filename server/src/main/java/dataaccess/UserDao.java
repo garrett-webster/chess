@@ -2,7 +2,7 @@ package dataaccess;
 
 import model.UserData;
 
-public interface UserDao extends DAO {
+public interface UserDao extends Dao {
     void createUser(UserData userData) throws DataAccessException;
 
 //    public UserData getUser(int userId) throws DataAccessException;

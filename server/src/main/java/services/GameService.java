@@ -14,35 +14,35 @@ import requestobjects.ListResult;
 import java.util.Objects;
 
 public class GameService extends Service{
-    DaoCollection DAOs;
+    DaoCollection daos;
     public GameService(DaoCollection DAOs) {
-        this.DAOs = DAOs;
+        this.daos = DAOs;
     }
 
     public ListResult list(String token) throws UserNotValidatedException {
-        if(DAOs.authDao.authenticateToken(token) == null){throw new UserNotValidatedException("Not validated");}
+        if(daos.authDao.authenticateToken(token) == null){throw new UserNotValidatedException("Not validated");}
 
-        return new ListResult(DAOs.gameDao.list());
+        return new ListResult(daos.gameDao.list());
     }
 
     public CreateResult create(String token, CreateRequest request) throws DataAccessException, BadRequestException {
-        if(DAOs.authDao.authenticateToken(token) == null) {throw new UserNotValidatedException("Not validated");}
+        if(daos.authDao.authenticateToken(token) == null) {throw new UserNotValidatedException("Not validated");}
         checkForBadRequest(request.gameName());
 
-        int id = DAOs.gameDao.create(request);
+        int id = daos.gameDao.create(request);
 
         return new CreateResult(id);
     }
 
     public void join(String token, JoinRequest request) throws UserNotValidatedException, AlreadyTakenException {
-        String username = DAOs.authDao.authenticateToken(token);
+        String username = daos.authDao.authenticateToken(token);
 
         if(username == null) {throw new UserNotValidatedException("Not validated");}
-        checkForBadRequest(request.playerColor(), request.gameID(), DAOs.gameDao.getGame(request.gameID()));
+        checkForBadRequest(request.playerColor(), request.gameID(), daos.gameDao.getGame(request.gameID()));
         if(!Objects.equals(request.playerColor(), "WHITE") && !Objects.equals(request.playerColor(), "BLACK")){
             throw new NotAValidColorException("Not a valid color");
         }
 
-        DAOs.gameDao.join(request, username);
+        daos.gameDao.join(request, username);
     }
 }
