@@ -12,7 +12,7 @@ public class AuthService extends Service {
         this.daos = daos;
     }
 
-    public String generateNewToken(String username) {
+    public String generateNewToken(String username) throws DataAccessException {
         if (username == null) { throw new BadRequestException("No username supplied");}
         String newToken = UUID.randomUUID().toString();
 

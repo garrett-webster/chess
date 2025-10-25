@@ -30,6 +30,8 @@ public class GameHandlers {
             context.result(buildJson("games", result.games()));
         } catch (UserNotValidatedException e) {
             setErrorContext(context, "401 Unauthorized Error: Unauthorized", 401);
+        } catch (DataAccessException e) {
+            setErrorContext(context, "500 Could not execute query", 500);
         }
     }
 
@@ -59,6 +61,8 @@ public class GameHandlers {
             setErrorContext(context,"403 Bad Request Error: Color already taken", 403);
         } catch (NotAValidColorException e) {
             setErrorContext(context,"400 Bad Request Error: Not a valid color", 400);
+        } catch (DataAccessException e) {
+            setErrorContext(context, "500 Could not execute query", 500);
         }
     }
 }

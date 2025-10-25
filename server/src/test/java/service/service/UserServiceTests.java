@@ -2,6 +2,7 @@ package service.service;
 
 import dataaccess.DaoCollection;
 import dataaccess.DataAccessException;
+import dataaccess.database.DatabaseDaoCollection;
 import dataaccess.exceptions.AlreadyTakenException;
 import dataaccess.exceptions.UserNotValidatedException;
 import dataaccess.memory.MemoryUserDao;
@@ -19,7 +20,7 @@ public class UserServiceTests {
     public static UserService userService;
     @BeforeEach
     public void setup() {
-        DaoCollection daos = new DaoCollection();
+        DaoCollection daos = new DatabaseDaoCollection();
         userService = new UserService(daos);
     }
 
@@ -65,7 +66,7 @@ public class UserServiceTests {
         }
 
         @Test
-        public void loginUserThatExists() {
+        public void loginUserThatExists() throws DataAccessException {
             LoginResult result = userService.login(new LoginRequest("Garrett", "password123"));
 
             Assertions.assertEquals("Garrett", result.username());

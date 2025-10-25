@@ -2,6 +2,7 @@ package service.service;
 
 import dataaccess.DaoCollection;
 import dataaccess.DataAccessException;
+import dataaccess.database.DatabaseDaoCollection;
 import dataaccess.exceptions.AlreadyTakenException;
 import dataaccess.exceptions.NotAValidColorException;
 import dataaccess.exceptions.UserNotValidatedException;
@@ -19,7 +20,7 @@ public class GameServiceTests {
     String validToken;
     @BeforeEach
     public void setup() throws AlreadyTakenException, DataAccessException {
-        DaoCollection daos = new DaoCollection();
+        DaoCollection daos = new DatabaseDaoCollection();
         userService = new UserService(daos);
         gameService = new GameService(daos);
         RegisterResult result = userService.register(
@@ -32,7 +33,7 @@ public class GameServiceTests {
     @Nested
     class ListTests {
         @Test
-        public void listWithValidToken() {
+        public void listWithValidToken() throws DataAccessException {
             Assertions.assertNotNull(gameService.list(validToken));
         }
 

@@ -48,6 +48,8 @@ public class UserHandlers {
             setErrorContext(context,"400 Bad Request Error: Some field was missing", 400);
         } catch (UserNotValidatedException e) {
             setErrorContext(context, "401 Unauthorized Error: User could not be logged in", 401);
+        } catch (DataAccessException e) {
+            setErrorContext(context, "500 Data Access Error: Could not connect to database", 500);
         }
     }
 }

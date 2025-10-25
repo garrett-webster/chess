@@ -1,6 +1,8 @@
 package service.service;
 
 import dataaccess.DaoCollection;
+import dataaccess.DataAccessException;
+import dataaccess.database.DatabaseDaoCollection;
 import dataaccess.exceptions.BadRequestException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,8 +13,8 @@ import services.AuthService;
 public class AuthServiceTests {
     public static AuthService authService;
     @BeforeEach
-    public void setup() {
-        DaoCollection daos = new DaoCollection();
+    public void setup() throws DataAccessException {
+        DaoCollection daos = new DatabaseDaoCollection();
         authService = new AuthService(daos);
         authService.daos.authDao.addAuthToken("Garrett", "dummytoken1");
         authService.daos.authDao.addAuthToken("Jerome", "dummytoken2");
@@ -34,7 +36,7 @@ public class AuthServiceTests {
     @Nested
     class GenerateTokenTests {
         @Test
-        public void generateTokenWithUsername() {
+        public void generateTokenWithUsername() throws DataAccessException {
            Assertions.assertNotNull(authService.generateNewToken("Garrett"));
         }
 

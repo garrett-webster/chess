@@ -38,7 +38,7 @@ public class UserService extends Service{
         return new RegisterResult(request.username(), token);
     }
 
-    public LoginResult login(LoginRequest request) throws UserNotValidatedException, BadRequestException {
+    public LoginResult login(LoginRequest request) throws UserNotValidatedException, BadRequestException, DataAccessException {
         checkForBadRequest(request.username(), request.password());
 
         if (!daos.userDao.validateWithPassword(request.username(), request.password())){

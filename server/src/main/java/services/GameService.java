@@ -19,7 +19,7 @@ public class GameService extends Service{
         this.daos = daos;
     }
 
-    public ListResult list(String token) throws UserNotValidatedException {
+    public ListResult list(String token) throws UserNotValidatedException, DataAccessException {
         if(daos.authDao.authenticateToken(token) == null){throw new UserNotValidatedException("Not validated");}
 
         return new ListResult(daos.gameDao.list());
@@ -34,7 +34,7 @@ public class GameService extends Service{
         return new CreateResult(id);
     }
 
-    public void join(String token, JoinRequest request) throws UserNotValidatedException, AlreadyTakenException {
+    public void join(String token, JoinRequest request) throws UserNotValidatedException, AlreadyTakenException, DataAccessException {
         String username = daos.authDao.authenticateToken(token);
 
         if(username == null) {throw new UserNotValidatedException("Not validated");}

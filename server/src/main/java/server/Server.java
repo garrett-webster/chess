@@ -15,7 +15,6 @@ import services.AuthService;
 import services.GameService;
 import services.UserService;
 
-import java.sql.DriverManager;
 import java.util.Map;
 
 public class Server {
@@ -28,7 +27,6 @@ public class Server {
     GameService gameService = new GameService(daos);
     GameHandlers gameHandlers = new GameHandlers(gameService);
     DatabaseManager databaseManager = new DatabaseManager();
-    DriverManager conn;
 
     public Server() {
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
