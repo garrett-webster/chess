@@ -10,8 +10,8 @@ public class DatabaseAuthDao extends AuthDao {
     }
 
     public String authenticateToken(String token) throws DataAccessException {
-        String sql_query = String.format("SELECT username FROM authdata WHERE token = '%s'", token);
-        return (String) executeQueryAndGetOne(sql_query);
+        String sql_query = "SELECT username FROM authdata WHERE token = ?";
+        return (String) executeQueryAndGetOne(sql_query, token);
     }
 
     public void clear() throws DataAccessException {
