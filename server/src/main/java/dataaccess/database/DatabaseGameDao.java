@@ -8,7 +8,7 @@ import requestobjects.JoinRequest;
 
 import java.util.List;
 
-public class DatabaseGameDao implements GameDao {
+public class DatabaseGameDao extends GameDao {
     public int create(CreateRequest request) {
         return 0;
     }
