@@ -7,10 +7,10 @@ import requestobjects.JoinRequest;
 
 import java.util.List;
 
-public interface GameDao extends Dao {
-    int create(CreateRequest request) throws DataAccessException;
-    GameData getGame(int gameID);
-    List<GameData> list();
-    void join(JoinRequest request, String username) throws AlreadyTakenException;
-    void clear();
+public abstract class GameDao extends Dao {
+    abstract public int create(CreateRequest request) throws DataAccessException;
+    abstract public GameData getGame(int gameID);
+    abstract public List<GameData> list();
+    abstract public void join(JoinRequest request, String username) throws AlreadyTakenException;
+    abstract public void clear();
 }

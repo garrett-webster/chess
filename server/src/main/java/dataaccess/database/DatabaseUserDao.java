@@ -3,7 +3,7 @@ package dataaccess.database;
 import dataaccess.UserDao;
 import model.UserData;
 
-public class DatabaseUserDao implements UserDao {
+public class DatabaseUserDao extends UserDao {
     @Override
     public void createUser(UserData userData) {
     }

@@ -2,6 +2,7 @@ package server;
 
 import dataaccess.DataAccessException;
 import dataaccess.DatabaseManager;
+import dataaccess.database.DatabaseDaoCollection;
 import handlers.AuthHandlers;
 import handlers.GameHandlers;
 import handlers.UserHandlers;
@@ -14,11 +15,12 @@ import services.AuthService;
 import services.GameService;
 import services.UserService;
 
+import java.sql.DriverManager;
 import java.util.Map;
 
 public class Server {
     private final Javalin javalin;
-    DaoCollection daos = new DaoCollection();
+    DaoCollection daos = new DatabaseDaoCollection();
     AuthService authService = new AuthService(daos);
     AuthHandlers authHandlers = new AuthHandlers(authService);
     UserService userService = new UserService(daos);
@@ -26,6 +28,7 @@ public class Server {
     GameService gameService = new GameService(daos);
     GameHandlers gameHandlers = new GameHandlers(gameService);
     DatabaseManager databaseManager = new DatabaseManager();
+    DriverManager conn;
 
     public Server() {
         javalin = Javalin.create(config -> config.staticFiles.add("web"));

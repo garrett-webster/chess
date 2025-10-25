@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class MemoryUserDao implements UserDao {
+public class MemoryUserDao extends UserDao {
     public Map<String, UserData> users = new HashMap<>();
 
     @Override

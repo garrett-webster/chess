@@ -2,14 +2,14 @@ package dataaccess;
 
 import model.UserData;
 
-public interface UserDao extends Dao {
-    void createUser(UserData userData) throws DataAccessException;
+public abstract class UserDao extends Dao {
+    public abstract void createUser(UserData userData) throws DataAccessException;
 
 //    public UserData getUser(int userId) throws DataAccessException;
 
-    UserData getUser(String username) throws DataAccessException;
+    public abstract UserData getUser(String username) throws DataAccessException;
 
-    boolean validateWithPassword(String username, String password);
+    public abstract boolean validateWithPassword(String username, String password);
 //
 //    public UserData getUser(String userName);
 //
@@ -19,5 +19,5 @@ public interface UserDao extends Dao {
 //
 //    public UserData validateUser(String username, String password);
 //
-    void clear();
+public abstract void clear();
 }

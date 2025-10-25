@@ -5,7 +5,7 @@ import dataaccess.AuthDao;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MemoryAuthDao implements AuthDao {
+public class MemoryAuthDao extends AuthDao {
     public Map<String, String> authTokens = new HashMap<>();
 
     public void addAuthToken(String username, String token) {
