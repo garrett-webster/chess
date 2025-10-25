@@ -1,4 +1,4 @@
-package dataaccess.local;
+package dataaccess.memory;
 
 import dataaccess.UserDao;
 import model.UserData;
@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class LocalUserDao implements UserDao {
+public class MemoryUserDao implements UserDao {
     public Map<String, UserData> users = new HashMap<>();
 
     @Override

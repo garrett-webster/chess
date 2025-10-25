@@ -4,7 +4,7 @@ import dataaccess.DaoCollection;
 import dataaccess.DataAccessException;
 import dataaccess.exceptions.AlreadyTakenException;
 import dataaccess.exceptions.UserNotValidatedException;
-import dataaccess.local.LocalUserDao;
+import dataaccess.memory.MemoryUserDao;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,7 +32,7 @@ public class UserServiceTests {
             );
             userService.register(request);
 
-            LocalUserDao dao = (LocalUserDao) userService.daos.userDao;
+            MemoryUserDao dao = (MemoryUserDao) userService.daos.userDao;
             UserData user = dao.users.get("Garrett");
 
             Assertions.assertEquals("Garrett", user.username());
