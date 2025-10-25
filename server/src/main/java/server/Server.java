@@ -1,5 +1,7 @@
 package server;
 
+import dataaccess.DataAccessException;
+import dataaccess.DatabaseManager;
 import handlers.AuthHandlers;
 import handlers.GameHandlers;
 import handlers.UserHandlers;
@@ -23,6 +25,7 @@ public class Server {
     UserHandlers userHandlers = new UserHandlers(userService);
     GameService gameService = new GameService(daos);
     GameHandlers gameHandlers = new GameHandlers(gameService);
+    DatabaseManager databaseManager = new DatabaseManager();
 
     public Server() {
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
@@ -36,8 +39,9 @@ public class Server {
                 .put("/game", gameHandlers::join);
     }
 
-    public int run(int desiredPort) {
+    public int run(int desiredPort) throws DataAccessException {
         javalin.start(desiredPort);
+        databaseManager.configureDatabase();
         return javalin.port();
     }
 

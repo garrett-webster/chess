@@ -29,6 +29,49 @@ public class DatabaseManager {
         }
     }
 
+    final String[] createStatements = {
+            """
+            CREATE TABLE IF NOT EXISTS `authdata` (
+              `idauthData` INT NOT NULL,
+              `userName` VARCHAR(45) NOT NULL,
+              `token` VARCHAR(45) NOT NULL,
+              PRIMARY KEY (`idauthData`),
+              UNIQUE INDEX `idauthData_UNIQUE` (`idauthData` ASC) VISIBLE);
+            """,
+            """
+            CREATE TABLE IF NOT EXISTS `games` (
+                `idgames` INT NOT NULL,
+                `name` VARCHAR(45) NOT NULL,
+                `whiteUsername` VARCHAR(45) NULL,
+                `blackUsername` VARCHAR(45) NULL,
+                `game` JSON NOT NULL,
+                PRIMARY KEY (`idgames`),
+                UNIQUE INDEX `idgames_UNIQUE` (`idgames` ASC) VISIBLE);
+            """,
+            """
+            CREATE TABLE IF NOT EXISTS `users` (
+              `idusers` INT NOT NULL,
+              `username` VARCHAR(45) NOT NULL,
+              `password` VARCHAR(45) NOT NULL,
+              `email` VARCHAR(45) NOT NULL,
+              PRIMARY KEY (`idusers`),
+              UNIQUE INDEX `idusers_UNIQUE` (`idusers` ASC) VISIBLE,
+              UNIQUE INDEX `username_UNIQUE` (`username` ASC) VISIBLE);
+            """
+    };
+    public void configureDatabase() throws DataAccessException {
+        createDatabase();
+        try (var conn = getConnection()) {
+            for (var statement: createStatements) {
+                try (var preparedStatement = conn.prepareStatement(statement)) {
+                    preparedStatement.executeUpdate();
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     /**
      * Create a connection to the database and sets the catalog based upon the
      * properties specified in db.properties. Connections to the database should
