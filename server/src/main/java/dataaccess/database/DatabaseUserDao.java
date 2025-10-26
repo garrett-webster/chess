@@ -28,8 +28,8 @@ public class DatabaseUserDao extends UserDao {
     }
 
     @Override
-    public void clear() {
-//        String sql_statement = "TRUNCATE TABLE users";
-//        executeCommand(sql_statement);
+    public void clear() throws DataAccessException {
+        String sql_statement = "TRUNCATE TABLE users";
+        executeCommand(sql_statement);
     }
 }

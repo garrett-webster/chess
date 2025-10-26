@@ -23,8 +23,13 @@ public class UserHandlers {
     }
 
     public void clear(Context context) {
-        userService.clear();
-        context.result("{}");
+        try {
+            userService.clear();
+            context.result("{}");
+        } catch (DataAccessException e) {
+            setErrorContext(context,"500 Data Access Error: Failed to clear users", 500);
+        }
+
     }
 
     public void create(Context context) {

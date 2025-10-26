@@ -19,7 +19,7 @@ public class UserService extends Service{
         authService = new AuthService(daos);
     }
 
-    public void clear() {
+    public void clear() throws DataAccessException {
         this.daos.userDao.clear();
     }
 

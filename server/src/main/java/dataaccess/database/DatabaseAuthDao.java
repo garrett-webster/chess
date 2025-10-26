@@ -16,7 +16,8 @@ public class DatabaseAuthDao extends AuthDao {
     }
 
     public void clear() throws DataAccessException {
-        executeCommand("DELETE FROM authdata");
+        String sql_statement = "TRUNCATE TABLE authdata";
+        executeCommand(sql_statement);
     }
 
     public void remove(String token) throws DataAccessException {

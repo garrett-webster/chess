@@ -1,5 +1,6 @@
 package dataaccess.database;
 
+import dataaccess.DataAccessException;
 import dataaccess.GameDao;
 import dataaccess.exceptions.AlreadyTakenException;
 import model.GameData;
@@ -21,7 +22,9 @@ public class DatabaseGameDao extends GameDao {
         return null;
     }
 
-    public void clear() {
+    public void clear() throws DataAccessException {
+        String sql_statement = "TRUNCATE TABLE games";
+        executeCommand(sql_statement);
     }
 
     public void join(JoinRequest request, String username) throws AlreadyTakenException {
