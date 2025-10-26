@@ -33,8 +33,8 @@ public class DatabaseManager {
             """
             CREATE TABLE IF NOT EXISTS `authdata` (
               `idauthData` INT NOT NULL AUTO_INCREMENT,
-              `userName` VARCHAR(45) NOT NULL,
-              `token` VARCHAR(45) NOT NULL,
+              `userName` VARCHAR(100) NOT NULL,
+              `token` VARCHAR(100) NOT NULL,
               PRIMARY KEY (`idauthData`),
               UNIQUE INDEX `idauthData_UNIQUE` (`idauthData` ASC) VISIBLE);
             """,
@@ -52,7 +52,7 @@ public class DatabaseManager {
             CREATE TABLE IF NOT EXISTS `users` (
               `idusers` INT NOT NULL AUTO_INCREMENT,
               `username` VARCHAR(45) NOT NULL,
-              `password` VARCHAR(45) NOT NULL,
+              `password` VARCHAR(255) NOT NULL,
               `email` VARCHAR(45) NOT NULL,
               PRIMARY KEY (`idusers`),
               UNIQUE INDEX `idusers_UNIQUE` (`idusers` ASC) VISIBLE,
