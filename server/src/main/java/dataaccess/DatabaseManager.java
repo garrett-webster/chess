@@ -32,7 +32,7 @@ public class DatabaseManager {
     final String[] createStatements = {
             """
             CREATE TABLE IF NOT EXISTS `authdata` (
-              `idauthData` INT NOT NULL,
+              `idauthData` INT NOT NULL AUTO_INCREMENT,
               `userName` VARCHAR(45) NOT NULL,
               `token` VARCHAR(45) NOT NULL,
               PRIMARY KEY (`idauthData`),
@@ -40,7 +40,7 @@ public class DatabaseManager {
             """,
             """
             CREATE TABLE IF NOT EXISTS `games` (
-                `idgames` INT NOT NULL,
+                `idgames` INT NOT NULL AUTO_INCREMENT,
                 `name` VARCHAR(45) NOT NULL,
                 `whiteUsername` VARCHAR(45) NULL,
                 `blackUsername` VARCHAR(45) NULL,
@@ -50,7 +50,7 @@ public class DatabaseManager {
             """,
             """
             CREATE TABLE IF NOT EXISTS `users` (
-              `idusers` INT NOT NULL,
+              `idusers` INT NOT NULL AUTO_INCREMENT,
               `username` VARCHAR(45) NOT NULL,
               `password` VARCHAR(45) NOT NULL,
               `email` VARCHAR(45) NOT NULL,
