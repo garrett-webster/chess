@@ -3,12 +3,14 @@ package dataaccess.database;
 import dataaccess.DataAccessException;
 import dataaccess.UserDao;
 import model.UserData;
+import org.mindrot.jbcrypt.BCrypt;
 
 public class DatabaseUserDao extends UserDao {
     @Override
     public void createUser(UserData userData) throws DataAccessException {
+        String hashedPassword = BCrypt.hashpw(userData.password(), BCrypt.gensalt());
         String sql_statement = "INSERT INTO users (username, password, email) VALUES(?,?,?)";
-        executeCommand(sql_statement, userData.username(), userData.password(), userData.email());
+        executeCommand(sql_statement, userData.username(), hashedPassword, userData.email());
     }
 
     @Override
