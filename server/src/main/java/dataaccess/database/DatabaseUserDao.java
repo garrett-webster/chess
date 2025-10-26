@@ -25,8 +25,15 @@ public class DatabaseUserDao extends UserDao {
     }
 
     @Override
-    public boolean validateWithPassword(String username, String password) {
-        return false;
+    public boolean validateWithPassword(String username, String password) throws DataAccessException {
+        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+
+        String sql_query = "SELECT password FROM users WHERE username = ?";
+        String passwordFromDb = executeQueryAndGetOne(
+                sql_query, results -> results.getString("password"), username
+        );
+
+        return hashedPassword.equals(passwordFromDb);
     }
 
     @Override
