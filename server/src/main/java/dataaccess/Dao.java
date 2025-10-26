@@ -49,7 +49,7 @@ public class Dao {
                 }
             }
         } catch (SQLException ex) {
-            throw new DataAccessException("failed to create execute command", ex);
+            throw new DataAccessException("failed to execute command", ex);
         }
     }
 }
