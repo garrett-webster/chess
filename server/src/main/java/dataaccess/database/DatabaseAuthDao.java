@@ -5,13 +5,14 @@ import dataaccess.DataAccessException;
 
 public class DatabaseAuthDao extends AuthDao {
     public void addAuthToken(String username, String token) throws DataAccessException {
-        String sql_command = String.format("INSERT INTO authdata VALUES(%s, %s)", username, token);
-        this.executeCommand(sql_command);
+        String sql_command = "INSERT INTO authdata (username, token) VALUES(?, ?)";
+        this.executeCommand(sql_command, username, token);
     }
 
     public String authenticateToken(String token) throws DataAccessException {
         String sql_query = "SELECT username FROM authdata WHERE token = ?";
-        return (String) executeQueryAndGetOne(sql_query, token);
+//        return (String) executeQueryAndGetOne(sql_query, token);
+        return null;
     }
 
     public void clear() throws DataAccessException {
