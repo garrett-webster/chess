@@ -2,15 +2,16 @@ package service.service;
 
 import dataaccess.DaoCollection;
 import dataaccess.DataAccessException;
+import dataaccess.UserDao;
 import dataaccess.database.DatabaseDaoCollection;
 import dataaccess.exceptions.AlreadyTakenException;
 import dataaccess.exceptions.UserNotValidatedException;
-import dataaccess.memory.MemoryUserDao;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.mindrot.jbcrypt.BCrypt;
 import requestobjects.LoginRequest;
 import requestobjects.LoginResult;
 import requestobjects.RegisterRequest;
@@ -19,9 +20,12 @@ import services.UserService;
 public class UserServiceTests {
     public static UserService userService;
     @BeforeEach
-    public void setup() {
+    public void setup() throws DataAccessException {
         DaoCollection daos = new DatabaseDaoCollection();
         userService = new UserService(daos);
+        daos.gameDao.clear();
+        daos.authDao.clear();
+        daos.userDao.clear();
     }
 
     @Nested
@@ -33,11 +37,14 @@ public class UserServiceTests {
             );
             userService.register(request);
 
-            MemoryUserDao dao = (MemoryUserDao) userService.daos.userDao;
-            UserData user = dao.users.get("Garrett");
+            UserDao dao =  userService.daos.userDao;
+            UserData user = dao.getUser("Garrett");
 
             Assertions.assertEquals("Garrett", user.username());
-            Assertions.assertEquals("password123", user.password());
+            Assertions.assertTrue(
+                    BCrypt.checkpw("password123", user.password()),
+                    "Stored password hash does not match plaintext password"
+            );
             Assertions.assertEquals("garrett@email.com", user.email());
         }
 
@@ -59,6 +66,10 @@ public class UserServiceTests {
     class LoginTests {
         @BeforeEach
         public void registerGarrett() throws AlreadyTakenException, DataAccessException {
+            DaoCollection daos = new DatabaseDaoCollection();
+            daos.gameDao.clear();
+            daos.authDao.clear();
+            daos.userDao.clear();
             RegisterRequest request = new RegisterRequest(
                     "Garrett", "password123", "garrett@email.com"
             );
