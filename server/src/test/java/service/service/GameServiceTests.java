@@ -21,6 +21,9 @@ public class GameServiceTests {
     @BeforeEach
     public void setup() throws AlreadyTakenException, DataAccessException {
         DaoCollection daos = new DatabaseDaoCollection();
+        daos.gameDao.clear();
+        daos.authDao.clear();
+        daos.userDao.clear();
         userService = new UserService(daos);
         gameService = new GameService(daos);
         RegisterResult result = userService.register(

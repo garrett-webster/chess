@@ -31,7 +31,7 @@ public class GameHandlers {
         } catch (UserNotValidatedException e) {
             setErrorContext(context, "401 Unauthorized Error: Unauthorized", 401);
         } catch (DataAccessException e) {
-            setErrorContext(context, "500 Could not execute query", 500);
+            setErrorContext(context, "500 Data Access Error: Could not execute query", 500);
         }
     }
 
@@ -62,7 +62,7 @@ public class GameHandlers {
         } catch (NotAValidColorException e) {
             setErrorContext(context,"400 Bad Request Error: Not a valid color", 400);
         } catch (DataAccessException e) {
-            setErrorContext(context, "500 Could not execute query", 500);
+            setErrorContext(context, "500 Data Access Error: Could not execute query", 500);
         }
     }
 }

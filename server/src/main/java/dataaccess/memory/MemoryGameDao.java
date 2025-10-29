@@ -40,7 +40,6 @@ public class MemoryGameDao extends GameDao {
         GameData newGame;
 
         if(Objects.equals(request.playerColor(), "WHITE") && gameData.whiteUsername() == null) {
-            // I don't think it should, but if weird stuff starts happening, look at deep vs shallow copy issues here.
             newGame = new GameData(
                     gameData.gameID(), gameData.gameName(), username, gameData.blackUsername(), gameData.game()
             );
