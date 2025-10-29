@@ -42,7 +42,12 @@ public class Server {
 
     public int run(int desiredPort) throws DataAccessException {
         javalin.start(desiredPort);
-        databaseManager.configureDatabase();
+        try {
+            databaseManager.configureDatabase();
+        } catch (DataAccessException e) {
+            System.out.println("Failed to set up the database");
+        }
+
         return javalin.port();
     }
 
