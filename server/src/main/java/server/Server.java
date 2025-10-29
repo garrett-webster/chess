@@ -40,7 +40,7 @@ public class Server {
                 .put("/game", gameHandlers::join);
     }
 
-    public int run(int desiredPort) throws DataAccessException {
+    public int run(int desiredPort) {
         javalin.start(desiredPort);
         try {
             databaseManager.configureDatabase();
