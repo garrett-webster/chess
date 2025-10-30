@@ -21,13 +21,13 @@ public class DatabaseGameDao extends GameDao {
                 new ChessGame()
         );
 
-        String sql_statement = "INSERT INTO games (name, whiteUsername, blackUsername, game) VALUES (?, ?, ?, ?)";
-        return executeCommand(sql_statement, request.gameName(), null, null, serializedGame);
+        String sqlStatement = "INSERT INTO games (name, whiteUsername, blackUsername, game) VALUES (?, ?, ?, ?)";
+        return executeCommand(sqlStatement, request.gameName(), null, null, serializedGame);
     }
 
     public GameData getGame(int gameID) throws DataAccessException {
-        String sql_statement = "SELECT * FROM games WHERE idgames = ?";
-        return executeQueryAndGetOne(sql_statement, results -> new GameData(
+        String sqlStatement = "SELECT * FROM games WHERE idgames = ?";
+        return executeQueryAndGetOne(sqlStatement, results -> new GameData(
                 results.getInt("idgames"),
                 results.getString("name"),
                 results.getString("whiteUsername"),
@@ -48,22 +48,22 @@ public class DatabaseGameDao extends GameDao {
     }
 
     public void clear() throws DataAccessException {
-        String sql_statement = "TRUNCATE TABLE games";
-        executeCommand(sql_statement);
+        String sqlStatement = "TRUNCATE TABLE games";
+        executeCommand(sqlStatement);
     }
 
     public void join(JoinRequest request, String username) throws AlreadyTakenException, DataAccessException {
         GameData gameData = getGame(request.gameID());
-        String sql_statement;
+        String sqlStatement;
 
         if(Objects.equals(request.playerColor(), "WHITE") && gameData.whiteUsername() == null) {
-            sql_statement = "UPDATE games SET whiteUsername = ? WHERE idgames = ?";
+            sqlStatement = "UPDATE games SET whiteUsername = ? WHERE idgames = ?";
         } else if (Objects.equals(request.playerColor(), "BLACK") && gameData.blackUsername() == null) {
-            sql_statement = "UPDATE games SET blackUsername = ? WHERE idgames = ?";
+            sqlStatement = "UPDATE games SET blackUsername = ? WHERE idgames = ?";
         } else {
             throw new AlreadyTakenException("Color already taken");
         }
 
-        executeCommand(sql_statement, username, request.gameID());
+        executeCommand(sqlStatement, username, request.gameID());
     }
 }

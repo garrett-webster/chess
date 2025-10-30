@@ -5,18 +5,18 @@ import dataaccess.DataAccessException;
 
 public class DatabaseAuthDao extends AuthDao {
     public void addAuthToken(String username, String token) throws DataAccessException {
-        String sql_command = "INSERT INTO authdata (username, token) VALUES(?, ?)";
-        this.executeCommand(sql_command, username, token);
+        String sqlStatement = "INSERT INTO authdata (username, token) VALUES(?, ?)";
+        this.executeCommand(sqlStatement, username, token);
     }
 
     public String authenticateToken(String token) throws DataAccessException {
-        String sql_query = "SELECT username FROM authdata WHERE token = ?";
-        return executeQueryAndGetOne(sql_query, results -> results.getString("username"), token);
+        String sqlStatement = "SELECT username FROM authdata WHERE token = ?";
+        return executeQueryAndGetOne(sqlStatement, results -> results.getString("username"), token);
     }
 
     public void clear() throws DataAccessException {
-        String sql_statement = "TRUNCATE TABLE authdata";
-        executeCommand(sql_statement);
+        String sqlStatement = "TRUNCATE TABLE authdata";
+        executeCommand(sqlStatement);
     }
 
     public void remove(String token) throws DataAccessException {
