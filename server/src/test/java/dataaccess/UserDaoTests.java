@@ -11,19 +11,20 @@ public class UserDaoTests {
     String username = "Garrett";
     String password = "password";
     String email = "garrett@email.com";
+    UserData userData;
 
     @BeforeEach
     public void setup() throws DataAccessException {
         daos.gameDao.clear();
         daos.authDao.clear();
         daos.userDao.clear();
+
+        userData = new UserData(username, password, email);
+        daos.userDao.createUser(userData);
     }
 
     @Test
     public void createUser() throws DataAccessException {
-        UserData userData = new UserData(username, password, email);
-        daos.userDao.createUser(userData);
-
         Assertions.assertEquals(userData.email(), daos.userDao.getUser(username).email());
     }
 
@@ -35,22 +36,16 @@ public class UserDaoTests {
 
     @Test
     public void getUserTest() throws DataAccessException {
-        UserData userData = new UserData(username, password, email);
-        daos.userDao.createUser(userData);
-
         Assertions.assertEquals(userData.email(), daos.userDao.getUser(username).email());
     }
 
     @Test
     public void getUserThatDoesntExistTest() throws DataAccessException {
-        Assertions.assertNull(daos.userDao.getUser(username));
+        Assertions.assertNull(daos.userDao.getUser("Random"));
     }
 
     @Test
     public void validateWithPassword() throws DataAccessException {
-        UserData userData = new UserData(username, password, email);
-        daos.userDao.createUser(userData);
-
         Assertions.assertTrue(daos.userDao.validateWithPassword(username, password));
     }
 
