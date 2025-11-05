@@ -36,10 +36,17 @@ public class ServerFacadeTests {
     }
 
     @Test
-    public void createUserTest() throws ResponseException, DataAccessException {
+    public void createUserTest() throws ResponseException {
         RegisterRequest request = new RegisterRequest("Garrett", "password", "garrett@email.com");
 
         Assertions.assertEquals("Garrett", serverFacade.createUser(request).username());
+    }
+
+    @Test
+    public void createDuplicateUserTest() throws ResponseException {
+        RegisterRequest request = new RegisterRequest("Garrett", "password", "garrett@email.com");
+        serverFacade.createUser(request);
+        Assertions.assertThrows(NullPointerException.class, () -> serverFacade.createUser(request));
     }
 
     @Test
@@ -52,11 +59,22 @@ public class ServerFacadeTests {
     }
 
     @Test
+    public void loginInvalidUserTest() {
+        LoginRequest lRequest = new LoginRequest("Garrett", "password");
+        Assertions.assertThrows(NullPointerException.class, () -> serverFacade.loginUser(lRequest));
+    }
+
+    @Test
     public void logoutUserTest() throws ResponseException {
         RegisterRequest rRequest = new RegisterRequest("Garrett", "password", "garrett@email.com");
         String token = serverFacade.createUser(rRequest).authToken();
 
         Assertions.assertDoesNotThrow(() -> serverFacade.logoutUser(token));
+    }
+
+    @Test
+    public void logoutInvalidUserTest() {
+        Assertions.assertThrows(NullPointerException.class, () -> serverFacade.logoutUser("NonsenseToken"));
     }
 
     @Test
