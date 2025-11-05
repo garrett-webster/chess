@@ -19,12 +19,18 @@ public class ServerFacade {
     }
 
     private HttpRequest buildRequest(String method, String path, Object body) {
+    private HttpRequest buildRequest(String method, String path, Object body, String token) {
         var request = HttpRequest.newBuilder()
                 .uri(URI.create(serverUrl + path))
                 .method(method, makeRequestBody(body));
         if (body != null) {
             request.setHeader("Content-Type", "application/json");
         }
+
+        if (token != null) {
+            request.setHeader("authorization", token);
+        }
+
         return request.build();
     }
 
