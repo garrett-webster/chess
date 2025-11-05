@@ -3,6 +3,10 @@ package server;
 import com.google.gson.Gson;
 import exception.ResponseException;
 import model.*;
+import requestobjects.LoginRequest;
+import requestobjects.LoginResult;
+import requestobjects.RegisterRequest;
+import requestobjects.RegisterResult;
 
 import java.net.*;
 import java.net.http.*;
@@ -18,7 +22,30 @@ public class ServerFacade {
         serverUrl = url;
     }
 
-    private HttpRequest buildRequest(String method, String path, Object body) {
+    public void clearDb() throws ResponseException {
+        var request = buildRequest("DELETE", "/db", null, null);
+        var response = sendRequest(request);
+        handleResponse(response, null);
+    }
+
+    public RegisterResult createUser(RegisterRequest registerRequest) throws ResponseException {
+        var request = buildRequest("POST", "/user", registerRequest, null);
+        var response = sendRequest(request);
+        return handleResponse(response, RegisterResult.class);
+    }
+
+    public LoginResult loginUser(LoginRequest loginRequest) throws ResponseException {
+        var request = buildRequest("POST", "/session", loginRequest, null);
+        var response = sendRequest(request);
+        return handleResponse(response, LoginResult.class);
+    }
+
+    public void logoutUser(String token) throws ResponseException {
+        var request = buildRequest("DELETE", "/session", null, token);
+        var response = sendRequest(request);
+        handleResponse(response, LoginResult.class);
+    }
+
     private HttpRequest buildRequest(String method, String path, Object body, String token) {
         var request = HttpRequest.newBuilder()
                 .uri(URI.create(serverUrl + path))

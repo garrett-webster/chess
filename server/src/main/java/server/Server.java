@@ -19,7 +19,7 @@ import java.util.Map;
 
 public class Server {
     private final Javalin javalin;
-    DaoCollection daos = new DatabaseDaoCollection();
+    public DaoCollection daos = new DatabaseDaoCollection();
     AuthService authService = new AuthService(daos);
     AuthHandlers authHandlers = new AuthHandlers(authService);
     UserService userService = new UserService(daos);
