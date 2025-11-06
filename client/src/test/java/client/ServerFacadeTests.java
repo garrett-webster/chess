@@ -3,6 +3,8 @@ package client;
 import dataaccess.DataAccessException;
 import exception.ResponseException;
 import org.junit.jupiter.api.*;
+import requestobjects.CreateRequest;
+import requestobjects.JoinRequest;
 import requestobjects.LoginRequest;
 import requestobjects.RegisterRequest;
 import server.Server;
@@ -73,13 +75,68 @@ public class ServerFacadeTests {
     }
 
     @Test
+    public void logoutWithInvalidTokenUserTest() {
+        Assertions.assertThrows(NullPointerException.class, () -> serverFacade.logoutUser("Invalid"));
+    }
+
+    @Test
+    public void createGameTest() throws ResponseException {
+        RegisterRequest rRequest = new RegisterRequest("Garrett", "password", "garrett@email.com");
+        String token = serverFacade.createUser(rRequest).authToken();
+
+        CreateRequest cRequest = new CreateRequest("game");
+        serverFacade.createGame(token, cRequest);
+
+        Assertions.assertDoesNotThrow(() -> serverFacade.logoutUser(token));
+    }
+
+    @Test
+    public void createInvalidGameTest() {
+        CreateRequest cRequest = new CreateRequest("game");
+        Assertions.assertThrows(NullPointerException.class, () -> serverFacade.createGame("Invalid", cRequest));
+    }
+
+    @Test
     public void logoutInvalidUserTest() {
         Assertions.assertThrows(NullPointerException.class, () -> serverFacade.logoutUser("NonsenseToken"));
     }
 
     @Test
-    public void sampleTest() {
-        Assertions.assertTrue(true);
+    public void listGameTest() throws ResponseException {
+        RegisterRequest rRequest = new RegisterRequest("Garrett", "password", "garrett@email.com");
+        String token = serverFacade.createUser(rRequest).authToken();
+
+        CreateRequest cRequest = new CreateRequest("game");
+        serverFacade.createGame(token, cRequest);
+
+        Assertions.assertNotNull(serverFacade.listGame(token).games());
     }
 
+    @Test
+    public void listWithInvalidTokenGameTest() {
+        Assertions.assertThrows(NullPointerException.class, () -> serverFacade.listGame("Invalid"));
+    }
+
+    @Test
+    public void joinGameTest() throws ResponseException {
+        RegisterRequest rRequest = new RegisterRequest("Garrett", "password", "garrett@email.com");
+        String token = serverFacade.createUser(rRequest).authToken();
+
+        CreateRequest cRequest = new CreateRequest("game");
+        serverFacade.createGame(token, cRequest);
+
+        JoinRequest jRequest = new JoinRequest("WHITE", 1);
+        Assertions.assertDoesNotThrow(() -> serverFacade.joinGame(token, jRequest));
+    }
+
+    @Test
+    public void joinWithInvalidTokenGameTest() {
+        JoinRequest jRequest = new JoinRequest("WHITE", 1);
+        Assertions.assertThrows(NullPointerException.class, () -> serverFacade.joinGame("Invalid", jRequest));
+    }
+
+    @Test
+    public void listWithInvalidTokenGame() {
+        Assertions.assertThrows(NullPointerException.class, () -> serverFacade.listGame("Invalid"));
+    }
 }
