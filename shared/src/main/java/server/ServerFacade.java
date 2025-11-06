@@ -3,10 +3,7 @@ package server;
 import com.google.gson.Gson;
 import exception.ResponseException;
 import model.*;
-import requestobjects.LoginRequest;
-import requestobjects.LoginResult;
-import requestobjects.RegisterRequest;
-import requestobjects.RegisterResult;
+import requestobjects.*;
 
 import java.net.*;
 import java.net.http.*;
@@ -44,6 +41,24 @@ public class ServerFacade {
         var request = buildRequest("DELETE", "/session", null, token);
         var response = sendRequest(request);
         handleResponse(response, LoginResult.class);
+    }
+
+    public CreateResult createGame(String token, CreateRequest createRequest) throws ResponseException {
+        var request = buildRequest("POST", "/game", createRequest, token);
+        var response = sendRequest(request);
+        return handleResponse(response, CreateResult.class);
+    }
+
+    public ListResult listGame(String token) throws ResponseException {
+        var request = buildRequest("GET", "/game", null, token);
+        var response = sendRequest(request);
+        return handleResponse(response, ListResult.class);
+    }
+
+    public void joinGame(String token, JoinRequest joinRequest) throws ResponseException {
+        var request = buildRequest("GET", "/game", joinRequest, token);
+        var response = sendRequest(request);
+        handleResponse(response, ListResult.class);
     }
 
     private HttpRequest buildRequest(String method, String path, Object body, String token) {
