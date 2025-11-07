@@ -23,13 +23,47 @@ public class ChessClient {
             String line = scanner.nextLine();
 
             try {
-                result = eval(line);
+                switch (line) {
+                    case "quit" -> result = "quit";
+                    case "help" -> result = help();
+                    default -> {
+                        if (state == State.SIGNEDOUT) {
+                            result = signedOutEval(line);
+                        } else if (state == State.SIGNEDIN) {
+                            result = signedInEval(line);
+                        } else if (state == State.INGAME) {
+                            result = inGameEval(line);
+                        } else {
+                            result = "Unknown command. Type \"help\" to see valid commands.";
+                        }
+                    }
+                };
                 System.out.print(SET_TEXT_COLOR_BLUE + result);
             } catch (Throwable e) {
                 var msg = e.toString();
                 System.out.print(msg);
             }
         }
+    }
+
+    private String signedOutEval(String line) {
+        return switch (line) {
+          case "help" -> help();
+          default -> throw new IllegalStateException("Unexpected value: " + line + "Type help for valid commands.");
+        };
+    }
+
+    private String signedInEval(String line) {
+        return switch (line) {
+            case "help" -> help();
+            default -> throw new IllegalStateException("Unexpected value: " + line + "Type help for valid commands.");
+        };
+    }
+    private String inGameEval(String line) {
+        return switch (line) {
+            case "help" -> help();
+            default -> throw new IllegalStateException("Unexpected value: " + line + "Type help for valid commands.");
+        };
     }
 
     private void printPrompt() {
