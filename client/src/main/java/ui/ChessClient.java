@@ -26,7 +26,6 @@ public class ChessClient {
     public void run() {
         System.out.println("Welcome to the chess client. Type \"help\" to see available actions.");
 
-        Scanner scanner = new Scanner(System.in);
         var result = "";
         while (!result.equals("quit")) {
             printPrompt();
@@ -67,6 +66,9 @@ public class ChessClient {
     private String signedInEval(String line) {
         return switch (line) {
             case "help" -> help();
+            case "logout" -> logout();
+            case "create game" -> newGame();
+            case "list games" -> listGames();
             default -> throw new IllegalStateException("Unexpected value: " + line + "Type help for valid commands.");
         };
     }
@@ -170,13 +172,5 @@ public class ChessClient {
         } else {
             return "You are currently in a game. Placeholder text";
         }
-    }
-
-    private String eval(String line) {
-        return switch (line) {
-            case "help" -> help();
-            case "quit" -> "quit";
-            default -> "Could not recognize command";
-        };
     }
 }
