@@ -166,9 +166,19 @@ public class ChessClient {
 
     private String help() {
         if (state == State.SIGNEDOUT) {
-            return "You are currently signed out. Type login to login, blah blah blah";
+            return """
+                    Commands
+                    login: Log in an existing user
+                    register: Register a new user
+                    quit: Exit the chess client""";
         } else if (state == State.SIGNEDIN) {
-            return "You are currently signed in. Placeholder text";
+            return """
+                    Commands
+                    logout: Logout and return to the prelogin menu
+                    create game: Create a new game
+                    list games: List all games as well as the participants
+                    play game: Join a given game (using the number from "list games")
+                    observe game: Watch a given game (using the number from "list games")""";
         } else {
             return "You are currently in a game. Placeholder text";
         }
