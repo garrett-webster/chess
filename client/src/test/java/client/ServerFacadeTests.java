@@ -3,13 +3,9 @@ package client;
 import dataaccess.DataAccessException;
 import exception.ResponseException;
 import org.junit.jupiter.api.*;
-import requestobjects.CreateRequest;
-import requestobjects.JoinRequest;
-import requestobjects.LoginRequest;
-import requestobjects.RegisterRequest;
+import requestobjects.*;
 import server.Server;
 import server.ServerFacade;
-
 
 public class ServerFacadeTests {
 
@@ -138,5 +134,14 @@ public class ServerFacadeTests {
     @Test
     public void listWithInvalidTokenGame() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> serverFacade.listGame("Invalid"));
+    }
+
+    @Test
+    public void clearDbTest() throws ResponseException {
+        RegisterRequest rRequest = new RegisterRequest("Garrett", "password", "garrett@email.com");
+        String token = serverFacade.createUser(rRequest).authToken();
+
+        serverFacade.clearDb();
+        Assertions.assertThrows(IllegalArgumentException.class, () -> serverFacade.listGame(token));
     }
 }
