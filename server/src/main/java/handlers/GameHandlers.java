@@ -2,10 +2,7 @@ package handlers;
 
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
-import dataaccess.exceptions.AlreadyTakenException;
-import dataaccess.exceptions.BadRequestException;
-import dataaccess.exceptions.NotAValidColorException;
-import dataaccess.exceptions.UserNotValidatedException;
+import dataaccess.exceptions.*;
 import requestobjects.CreateRequest;
 import requestobjects.CreateResult;
 import requestobjects.JoinRequest;
@@ -58,7 +55,9 @@ public class GameHandlers {
         } catch (BadRequestException e) {
             setErrorContext(context,"400 Bad Request Error: Some field was missing", 400);
         } catch (AlreadyTakenException e) {
-            setErrorContext(context,"403 Bad Request Error: Color already taken", 403);
+            setErrorContext(context, "403 Bad Request Error: Color already taken", 403);
+        } catch (UserAlreadyJoinedException e) {
+            setErrorContext(context, "403 User Already Joined Error: User already is in the game", 403);
         } catch (NotAValidColorException e) {
             setErrorContext(context,"400 Bad Request Error: Not a valid color", 400);
         } catch (DataAccessException e) {

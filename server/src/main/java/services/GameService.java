@@ -2,10 +2,7 @@ package services;
 
 import dataaccess.DaoCollection;
 import dataaccess.DataAccessException;
-import dataaccess.exceptions.AlreadyTakenException;
-import dataaccess.exceptions.BadRequestException;
-import dataaccess.exceptions.NotAValidColorException;
-import dataaccess.exceptions.UserNotValidatedException;
+import dataaccess.exceptions.*;
 import requestobjects.CreateRequest;
 import requestobjects.CreateResult;
 import requestobjects.JoinRequest;
@@ -34,7 +31,7 @@ public class GameService extends Service{
         return new CreateResult(id);
     }
 
-    public void join(String token, JoinRequest request) throws UserNotValidatedException, AlreadyTakenException, DataAccessException {
+    public void join(String token, JoinRequest request) throws UserNotValidatedException, AlreadyTakenException, DataAccessException, UserAlreadyJoinedException {
         String username = daos.authDao.authenticateToken(token);
 
         if(username == null) {throw new UserNotValidatedException("Not validated");}

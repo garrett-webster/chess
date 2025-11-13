@@ -7,18 +7,17 @@ import chess.ChessGame;
 import exception.ResponseException;
 import model.GameData;
 import requestobjects.CreateRequest;
+import requestobjects.JoinRequest;
 import requestobjects.LoginRequest;
 import requestobjects.RegisterRequest;
 import server.ServerFacade;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Scanner;
 
 public class ChessClient {
     private final ServerFacade server;
     private State state = State.SIGNEDOUT;
-    private String loggedInUsername = null;
     Scanner scanner = new Scanner(System.in);
     String authToken;
     List<GameData> games;
@@ -34,7 +33,6 @@ public class ChessClient {
         while (!result.equals("quit")) {
             printPrompt();
             String line = scanner.nextLine().toLowerCase();
-
             try {
                 if (line.equals("help")) {
                     result = help();
@@ -51,7 +49,7 @@ public class ChessClient {
                 }
                 System.out.println(SET_TEXT_COLOR_BLUE + result);
             } catch (Throwable e) {
-                var msg = e.getMessage();
+                var msg = e.getMessage().replaceFirst(".*Error: ", "");
                 System.out.println(msg);
             }
         }
@@ -67,13 +65,14 @@ public class ChessClient {
         };
     }
 
-    private String signedInEval(String line) throws ResponseException {
+    private String signedInEval(String line) {
         return switch (line) {
             case "help" -> help();
             case "logout" -> logout();
             case "create game" -> newGame();
             case "list games" -> listGames();
             case "play game" -> playGame();
+            case "observe game" -> observeGame();
             default -> throw new IllegalStateException("Unexpected value: " + line + "Type help for valid commands.");
         };
     }
@@ -100,7 +99,7 @@ public class ChessClient {
         String email = scanner.nextLine();
 
         try {
-            server.createUser(new RegisterRequest(username, password, email));
+            authToken = server.createUser(new RegisterRequest(username, password, email)).authToken();
             state = State.SIGNEDIN;
             return "Successfully registered.";
         } catch (ResponseException e) {
@@ -119,7 +118,6 @@ public class ChessClient {
         try {
             authToken = server.loginUser(new LoginRequest(username, password)).authToken();
             state = State.SIGNEDIN;
-            loggedInUsername = username;
             return "Successfully signed in.";
         } catch (ResponseException e) {
             return "Failed to sign in with the given credentials.";
@@ -130,7 +128,6 @@ public class ChessClient {
         try {
             server.logoutUser(authToken);
             state = State.SIGNEDOUT;
-            loggedInUsername = null;
             return "Logging out...";
         } catch (ResponseException e) {
             return "Something failed while logging out. Check your connection to the server.";
@@ -171,22 +168,52 @@ public class ChessClient {
         }
     }
 
-    private String playGame() throws ResponseException {
-        if (games == null) {
-            games = server.listGame(authToken).games();
+    private String playGame() {
+        GameData gameData = getGameFromUser();
+
+        System.out.println("Which color would you like to join? (W)hite or (B)lack?");
+        printPrompt();
+        String line = scanner.nextLine();
+
+        ChessGame.TeamColor perspective;
+        String color;
+        if (line.equalsIgnoreCase("w")) {
+            perspective = ChessGame.TeamColor.WHITE;
+            color = "WHITE";
+        } else if (line.equalsIgnoreCase("b")) {
+            perspective = ChessGame.TeamColor.BLACK;
+            color = "BLACK";
+        } else {
+            throw new IllegalArgumentException("Can't parse input. Accepted inputs are \"W\" or \"B\"");
         }
 
+        ChessBoard board = gameData.game().getBoard();
         try {
+            server.joinGame(authToken, new JoinRequest(color, gameData.gameID()));
+            games = server.listGame(authToken).games();
+        } catch (Exception e) {
+            return "Could not join game. "+ e.getMessage().replaceFirst(".*Error: ", "");
+        }
+
+        return printBoard(board, perspective);
+    }
+
+    private String observeGame() {
+        GameData gameData = getGameFromUser();
+        ChessBoard board = gameData.game().getBoard();
+        return printBoard(board, ChessGame.TeamColor.WHITE);
+    }
+
+    private GameData getGameFromUser() {
+        try {
+            if (games == null) {
+                games = server.listGame(authToken).games();
+            }
+
             System.out.println("Enter game id");
             printPrompt();
             String line = scanner.nextLine();
-            int id = Integer.parseInt(line);
-
-            GameData gameData = games.get(id);
-            ChessGame.TeamColor perspective = Objects.equals(gameData.blackUsername(), loggedInUsername) ?
-                    ChessGame.TeamColor.BLACK: ChessGame.TeamColor.WHITE;
-            ChessBoard board = gameData.game().getBoard();
-            return printBoard(board, perspective);
+            return games.get(Integer.parseInt(line) - 1);
         } catch (Exception e) {
             throw new RuntimeException("Could not find game with given id");
         }

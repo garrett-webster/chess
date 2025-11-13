@@ -67,7 +67,7 @@ public class Server {
     }
 
     public static void setErrorContext(Context context, String message, int status) {
-        context.result(buildJson("message", message));
+        context.result(buildJson("message", message, "status", status));
         context.status(status);
     }
 }

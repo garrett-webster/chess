@@ -1,6 +1,7 @@
 package server;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import exception.ResponseException;
 import model.*;
 import requestobjects.*;
@@ -56,7 +57,7 @@ public class ServerFacade {
     }
 
     public void joinGame(String token, JoinRequest joinRequest) throws ResponseException {
-        var request = buildRequest("GET", "/game", joinRequest, token);
+        var request = buildRequest("PUT", "/game", joinRequest, token);
         var response = sendRequest(request);
         handleResponse(response, ListResult.class);
     }
@@ -97,7 +98,10 @@ public class ServerFacade {
         if (!isSuccessful(status)) {
             var body = response.body();
             if (body != null) {
-                throw ResponseException.fromJson(body);
+                throw new IllegalArgumentException(JsonParser.parseString(body)
+                        .getAsJsonObject()
+                        .get("message")
+                        .getAsString());
             }
 
             throw new ResponseException(ResponseException.fromHttpStatusCode(status), "other failure: " + status);
