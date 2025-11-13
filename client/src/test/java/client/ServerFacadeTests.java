@@ -48,7 +48,7 @@ public class ServerFacadeTests {
     public void createDuplicateUserTest() throws ResponseException {
         RegisterRequest request = new RegisterRequest("Garrett", "password", "garrett@email.com");
         serverFacade.createUser(request);
-        Assertions.assertThrows(NullPointerException.class, () -> serverFacade.createUser(request));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> serverFacade.createUser(request));
     }
 
     @Test
@@ -63,7 +63,7 @@ public class ServerFacadeTests {
     @Test
     public void loginInvalidUserTest() {
         LoginRequest lRequest = new LoginRequest("Garrett", "password");
-        Assertions.assertThrows(NullPointerException.class, () -> serverFacade.loginUser(lRequest));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> serverFacade.loginUser(lRequest));
     }
 
     @Test
@@ -76,7 +76,7 @@ public class ServerFacadeTests {
 
     @Test
     public void logoutWithInvalidTokenUserTest() {
-        Assertions.assertThrows(NullPointerException.class, () -> serverFacade.logoutUser("Invalid"));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> serverFacade.logoutUser("Invalid"));
     }
 
     @Test
@@ -93,12 +93,12 @@ public class ServerFacadeTests {
     @Test
     public void createInvalidGameTest() {
         CreateRequest cRequest = new CreateRequest("game");
-        Assertions.assertThrows(NullPointerException.class, () -> serverFacade.createGame("Invalid", cRequest));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> serverFacade.createGame("Invalid", cRequest));
     }
 
     @Test
     public void logoutInvalidUserTest() {
-        Assertions.assertThrows(NullPointerException.class, () -> serverFacade.logoutUser("NonsenseToken"));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> serverFacade.logoutUser("NonsenseToken"));
     }
 
     @Test
@@ -114,7 +114,7 @@ public class ServerFacadeTests {
 
     @Test
     public void listWithInvalidTokenGameTest() {
-        Assertions.assertThrows(NullPointerException.class, () -> serverFacade.listGame("Invalid"));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> serverFacade.listGame("Invalid"));
     }
 
     @Test
@@ -132,11 +132,11 @@ public class ServerFacadeTests {
     @Test
     public void joinWithInvalidTokenGameTest() {
         JoinRequest jRequest = new JoinRequest("WHITE", 1);
-        Assertions.assertThrows(NullPointerException.class, () -> serverFacade.joinGame("Invalid", jRequest));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> serverFacade.joinGame("Invalid", jRequest));
     }
 
     @Test
     public void listWithInvalidTokenGame() {
-        Assertions.assertThrows(NullPointerException.class, () -> serverFacade.listGame("Invalid"));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> serverFacade.listGame("Invalid"));
     }
 }
