@@ -56,8 +56,6 @@ public class GameHandlers {
             setErrorContext(context,"400 Bad Request Error: Some field was missing", 400);
         } catch (AlreadyTakenException e) {
             setErrorContext(context, "403 Bad Request Error: Color already taken", 403);
-        } catch (UserAlreadyJoinedException e) {
-            setErrorContext(context, "403 User Already Joined Error: User already is in the game", 403);
         } catch (NotAValidColorException e) {
             setErrorContext(context,"400 Bad Request Error: Not a valid color", 400);
         } catch (DataAccessException e) {

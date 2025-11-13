@@ -5,7 +5,6 @@ import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import dataaccess.GameDao;
 import dataaccess.exceptions.AlreadyTakenException;
-import dataaccess.exceptions.UserAlreadyJoinedException;
 import model.GameData;
 import requestobjects.CreateRequest;
 import requestobjects.JoinRequest;
@@ -53,13 +52,9 @@ public class DatabaseGameDao extends GameDao {
         executeCommand(sqlStatement);
     }
 
-    public void join(JoinRequest request, String username) throws AlreadyTakenException, DataAccessException, UserAlreadyJoinedException {
+    public void join(JoinRequest request, String username) throws AlreadyTakenException, DataAccessException {
         GameData gameData = getGame(request.gameID());
         String sqlStatement;
-
-        if (Objects.equals(gameData.blackUsername(), username) || Objects.equals(gameData.whiteUsername(), username)) {
-            throw new UserAlreadyJoinedException("User has already joined game");
-        }
 
         if(Objects.equals(request.playerColor(), "WHITE") && gameData.whiteUsername() == null) {
             sqlStatement = "UPDATE games SET whiteUsername = ? WHERE idgames = ?";

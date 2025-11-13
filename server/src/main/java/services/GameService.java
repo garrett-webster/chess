@@ -31,7 +31,7 @@ public class GameService extends Service{
         return new CreateResult(id);
     }
 
-    public void join(String token, JoinRequest request) throws UserNotValidatedException, AlreadyTakenException, DataAccessException, UserAlreadyJoinedException {
+    public void join(String token, JoinRequest request) throws UserNotValidatedException, AlreadyTakenException, DataAccessException {
         String username = daos.authDao.authenticateToken(token);
 
         if(username == null) {throw new UserNotValidatedException("Not validated");}
