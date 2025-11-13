@@ -2,6 +2,8 @@ package ui;
 
 import static ui.EscapeSequences.*;
 
+import chess.ChessBoard;
+import chess.ChessGame;
 import exception.ResponseException;
 import model.GameData;
 import requestobjects.CreateRequest;
@@ -10,11 +12,13 @@ import requestobjects.RegisterRequest;
 import server.ServerFacade;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class ChessClient {
     private final ServerFacade server;
     private State state = State.SIGNEDOUT;
+    private String loggedInUsername = null;
     Scanner scanner = new Scanner(System.in);
     String authToken;
     List<GameData> games;
@@ -29,7 +33,7 @@ public class ChessClient {
         var result = "";
         while (!result.equals("quit")) {
             printPrompt();
-            String line = scanner.nextLine();
+            String line = scanner.nextLine().toLowerCase();
 
             try {
                 if (line.equals("help")) {
@@ -63,12 +67,13 @@ public class ChessClient {
         };
     }
 
-    private String signedInEval(String line) {
+    private String signedInEval(String line) throws ResponseException {
         return switch (line) {
             case "help" -> help();
             case "logout" -> logout();
             case "create game" -> newGame();
             case "list games" -> listGames();
+            case "play game" -> playGame();
             default -> throw new IllegalStateException("Unexpected value: " + line + "Type help for valid commands.");
         };
     }
@@ -114,6 +119,7 @@ public class ChessClient {
         try {
             authToken = server.loginUser(new LoginRequest(username, password)).authToken();
             state = State.SIGNEDIN;
+            loggedInUsername = username;
             return "Successfully signed in.";
         } catch (ResponseException e) {
             return "Failed to sign in with the given credentials.";
@@ -124,6 +130,7 @@ public class ChessClient {
         try {
             server.logoutUser(authToken);
             state = State.SIGNEDOUT;
+            loggedInUsername = null;
             return "Logging out...";
         } catch (ResponseException e) {
             return "Something failed while logging out. Check your connection to the server.";
@@ -162,6 +169,32 @@ public class ChessClient {
         } catch (ResponseException e) {
             return "Failed to get games. Check your connection to the server and try again.";
         }
+    }
+
+    private String playGame() throws ResponseException {
+        if (games == null) {
+            games = server.listGame(authToken).games();
+        }
+
+        try {
+            System.out.println("Enter game id");
+            printPrompt();
+            String line = scanner.nextLine();
+            int id = Integer.parseInt(line);
+
+            GameData gameData = games.get(id);
+            ChessGame.TeamColor perspective = Objects.equals(gameData.blackUsername(), loggedInUsername) ?
+                    ChessGame.TeamColor.BLACK: ChessGame.TeamColor.WHITE;
+            ChessBoard board = gameData.game().getBoard();
+            return printBoard(board, perspective);
+        } catch (Exception e) {
+            throw new RuntimeException("Could not find game with given id");
+        }
+    }
+
+    private String printBoard(ChessBoard board, ChessGame.TeamColor perspective) {
+        new BoardPrinter(board, perspective).print();
+        return "";
     }
 
     private String help() {
