@@ -24,4 +24,8 @@ public class AuthService extends Service {
         if (daos.authDao.authenticateToken(token) == null) {throw new UserNotValidatedException("Not validated");}
         daos.authDao.remove(token);
     }
+
+    public String getUsernameFromToken(String token) throws DataAccessException {
+        return daos.authDao.authenticateToken(token);
+    }
 }
