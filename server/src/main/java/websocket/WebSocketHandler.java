@@ -16,8 +16,8 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     @Override
     public void handleMessage(@NotNull WsMessageContext ctx) {
         try {
-            UserGameCommand.CommandType command = new Gson().fromJson(ctx.message(), UserGameCommand.CommandType.class);
-            switch (command) {
+            UserGameCommand command = new Gson().fromJson(ctx.message(), UserGameCommand.class);
+            switch (command.commandType()) {
                 case CONNECT -> connect(ctx.session);
                 case MAKE_MOVE -> makeMove(ctx.session);
             }
