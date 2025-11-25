@@ -36,6 +36,13 @@ public class DatabaseGameDao extends GameDao {
         ), gameID);
     }
 
+    public void updateGame(int gameID, ChessGame updatedGame) throws DataAccessException {
+        String serializedGame = serializer.toJson(updatedGame);
+
+        String sqlStatement = "UPDATE games SET game = ? WHERE idgames = ?";
+        executeCommand(sqlStatement, serializedGame, gameID);
+    }
+
     public List<GameData> list() throws DataAccessException {
         List<GameData> games = new ArrayList<>();
         List<Integer> gameIds = getAllIds("SELECT idgames FROM games", "idgames");

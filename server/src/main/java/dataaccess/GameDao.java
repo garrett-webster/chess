@@ -1,5 +1,6 @@
 package dataaccess;
 
+import chess.ChessGame;
 import dataaccess.exceptions.AlreadyTakenException;
 import model.GameData;
 import requestobjects.CreateRequest;
@@ -13,4 +14,5 @@ public abstract class GameDao extends Dao {
     abstract public List<GameData> list() throws DataAccessException;
     abstract public void join(JoinRequest request, String username) throws AlreadyTakenException, DataAccessException;
     abstract public void clear() throws DataAccessException;
+    abstract public void updateGame(int gameID, ChessGame updateGame) throws DataAccessException;
 }

@@ -84,7 +84,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         ChessMove move = command.getMove();
         try {
             authService.validateWithToken(command.getAuthToken());
-            game = gameService.applyMove(gameService.getById(command.getGameID()), command.getMove(), command.getAuthToken());
+            game = gameService.applyMove(gameService.getById(command.getGameID()), command.getMove(), command.getGameID(), command.getAuthToken());
             connectionManager.broadcast(null, new LoadGame(game), command.getGameID());
             connectionManager.broadcast(session, new Notification("User " + username + " made the move " + move), command.getGameID());
         } catch (UserNotValidatedException e) {

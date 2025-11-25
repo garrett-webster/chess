@@ -1,6 +1,7 @@
 package dataaccess.memory;
 
 import chess.ChessGame;
+import dataaccess.DataAccessException;
 import dataaccess.GameDao;
 import dataaccess.exceptions.AlreadyTakenException;
 import model.GameData;
@@ -51,5 +52,8 @@ public class MemoryGameDao extends GameDao {
             throw new AlreadyTakenException("Color already taken");
         }
         games.put(request.gameID(), newGame);
+    }
+
+    public void updateGame(int gameID, ChessGame updateGame) throws DataAccessException {
     }
 }
