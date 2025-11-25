@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import services.AuthService;
 import services.GameService;
 import services.UserService;
+import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
 import org.eclipse.jetty.websocket.api.Session;
 import websocket.messages.ErrorMessage;
@@ -39,9 +40,9 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     public void handleMessage(@NotNull WsMessageContext ctx) throws IOException {
         try {
             UserGameCommand command = new Gson().fromJson(ctx.message(), UserGameCommand.class);
-            switch (command.commandType()) {
+            switch (command.getCommandType()) {
                 case CONNECT -> connect(ctx.session, command);
-                case MAKE_MOVE -> makeMove(ctx.session);
+                case MAKE_MOVE -> makeMove(ctx.session, new Gson().fromJson(ctx.message(), MakeMoveCommand.class));
             }
         } catch (IOException | DataAccessException ex) {
             ErrorMessage message = new ErrorMessage(ex.getMessage());
@@ -56,14 +57,14 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
     private void connect(Session session, UserGameCommand command) throws IOException, DataAccessException {
         // TODO: Update this to send a load board message to the new player and exclude that player from the notification
-        String username = authService.getUsernameFromToken(command.authToken());
-        connectionManager.addToGame(session, command.gameID(), username);
+        String username = authService.getUsernameFromToken(command.getAuthToken());
+        connectionManager.addToGame(session, command.getGameID(), username);
 
         ServerMessage message;
         try {
-            authService.validateWithToken(command.authToken());
-            message = new LoadGame(gameService.getById(command.gameID()));
-            connectionManager.broadcast(session, new Notification("User " + username + " connected"), command.gameID());
+            authService.validateWithToken(command.getAuthToken());
+            message = new LoadGame(gameService.getById(command.getGameID()));
+            connectionManager.broadcast(session, new Notification("User " + username + " connected"), command.getGameID());
         } catch (DataAccessException e) {
             message = new ErrorMessage("Error: Could not find a game with the given id");
         } catch (UserNotValidatedException e) {
@@ -73,7 +74,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
     }
 
-    private void makeMove(Session session) {
-        System.out.println("Connect called");
+    private void makeMove(Session session, UserGameCommand command) {
+        System.out.println("Make Move called");
     }
 }
