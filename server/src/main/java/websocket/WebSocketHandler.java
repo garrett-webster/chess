@@ -2,15 +2,18 @@ package websocket;
 
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
+import dataaccess.exceptions.UserNotValidatedException;
 import io.javalin.websocket.*;
 import org.jetbrains.annotations.NotNull;
 import services.AuthService;
 import services.GameService;
+import services.UserService;
 import websocket.commands.UserGameCommand;
 import org.eclipse.jetty.websocket.api.Session;
 import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGame;
 import websocket.messages.Notification;
+import websocket.messages.ServerMessage;
 
 import java.io.IOException;
 
@@ -18,16 +21,17 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     ConnectionManager connectionManager = new ConnectionManager();
     AuthService authService;
     GameService gameService;
+    UserService userService;
     Gson serializer = new Gson();
 
-    public WebSocketHandler(AuthService authService, GameService gameService) {
+    public WebSocketHandler(AuthService authService, GameService gameService, UserService userService) {
         this.authService = authService;
         this.gameService = gameService;
+        this.userService = userService;
     }
 
     @Override
     public void handleConnect(WsConnectContext ctx) {
-        System.out.println("Websocket connected");
         ctx.enableAutomaticPings();
     }
 
@@ -54,9 +58,19 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         // TODO: Update this to send a load board message to the new player and exclude that player from the notification
         String username = authService.getUsernameFromToken(command.authToken());
         connectionManager.addToGame(session, command.gameID(), username);
-        session.getRemote().sendString(serializer.toJson(new LoadGame(gameService.getById(command.gameID()))));
-        connectionManager.broadcast(session, new Notification("User " + username + " connected"), command.gameID());
-        System.out.println("Connect called");
+
+        ServerMessage message;
+        try {
+            authService.validateWithToken(command.authToken());
+            message = new LoadGame(gameService.getById(command.gameID()));
+            connectionManager.broadcast(session, new Notification("User " + username + " connected"), command.gameID());
+        } catch (DataAccessException e) {
+            message = new ErrorMessage("Error: Could not find a game with the given id");
+        } catch (UserNotValidatedException e) {
+            message = new ErrorMessage("Error: Could not authenticate user");
+        }
+        session.getRemote().sendString(serializer.toJson(message));
+
     }
 
     private void makeMove(Session session) {

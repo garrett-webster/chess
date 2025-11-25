@@ -33,7 +33,7 @@ public class Server {
     public Server() {
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
 
-        webSocketHandler = new WebSocketHandler(authService, gameService);
+        webSocketHandler = new WebSocketHandler(authService, gameService, userService);
 
         javalin.delete("/db", new AppService(daos)::clear)
                 .post("/user", userHandlers::create)

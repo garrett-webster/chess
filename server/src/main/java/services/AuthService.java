@@ -12,6 +12,10 @@ public class AuthService extends Service {
         this.daos = daos;
     }
 
+    public void validateWithToken(String token) throws DataAccessException {
+        if(daos.authDao.authenticateToken(token) == null){throw new UserNotValidatedException("Not validated");}
+    }
+
     public String generateNewToken(String username) throws DataAccessException {
         if (username == null) { throw new BadRequestException("No username supplied");}
         String newToken = UUID.randomUUID().toString();
