@@ -1,5 +1,6 @@
 package services;
 
+import chess.ChessGame;
 import dataaccess.DaoCollection;
 import dataaccess.DataAccessException;
 import dataaccess.exceptions.*;
@@ -29,6 +30,14 @@ public class GameService extends Service{
         int id = daos.gameDao.create(request);
 
         return new CreateResult(id);
+    }
+
+    public ChessGame getById(int id) throws DataAccessException {
+        try {
+            return daos.gameDao.getGame(id).game();
+        } catch (Exception e) {
+            throw new DataAccessException("Error: Could not get game with id " + id);
+        }
     }
 
     public void join(String token, JoinRequest request) throws UserNotValidatedException, AlreadyTakenException, DataAccessException {

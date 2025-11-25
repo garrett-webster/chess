@@ -6,6 +6,7 @@ import websocket.messages.ServerMessage;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -23,7 +24,7 @@ public class ConnectionManager {
         sessions.put(session, userName);
 
         if (!games.containsKey(gameId)) {
-            games.put(gameId, Set.of(session));
+            new HashSet<>(Set.of(session));
         } else {
             games.get(gameId).add(session);
         }
@@ -37,6 +38,7 @@ public class ConnectionManager {
 
     public void broadcast(Session excludeSession, ServerMessage message, int gameId) throws IOException {
         Gson serializer = new Gson();
+
         for (Session c : games.get(gameId)) {
             if (c.isOpen()) {
                 if (!c.equals(excludeSession)) {
