@@ -1,6 +1,8 @@
 package services;
 
 import chess.ChessGame;
+import chess.ChessMove;
+import chess.InvalidMoveException;
 import dataaccess.DaoCollection;
 import dataaccess.DataAccessException;
 import dataaccess.exceptions.*;
@@ -50,5 +52,12 @@ public class GameService extends Service{
         }
 
         daos.gameDao.join(request, username);
+    }
+
+    public ChessGame applyMove(ChessGame game, ChessMove move, String token) throws DataAccessException, UserNotValidatedException, InvalidMoveException {
+        if(daos.authDao.authenticateToken(token) == null){throw new UserNotValidatedException("Not validated");}
+        game.makeMove(move);
+        return game;
+        // TODO: Update the game in the DB
     }
 }

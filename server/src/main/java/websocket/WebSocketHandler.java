@@ -1,5 +1,8 @@
 package websocket;
 
+import chess.ChessGame;
+import chess.ChessMove;
+import chess.InvalidMoveException;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import dataaccess.exceptions.UserNotValidatedException;
@@ -74,7 +77,25 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
     }
 
-    private void makeMove(Session session, UserGameCommand command) {
-        System.out.println("Make Move called");
+    private void makeMove(Session session, MakeMoveCommand command) throws IOException, DataAccessException {
+        String username = authService.getUsernameFromToken(command.getAuthToken());
+        ServerMessage message;
+        ChessGame game;
+        ChessMove move = command.getMove();
+        try {
+            authService.validateWithToken(command.getAuthToken());
+            game = gameService.applyMove(gameService.getById(command.getGameID()), command.getMove(), command.getAuthToken());
+            connectionManager.broadcast(null, new LoadGame(game), command.getGameID());
+            connectionManager.broadcast(session, new Notification("User " + username + " made the move " + move), command.getGameID());
+        } catch (UserNotValidatedException e) {
+            message = new ErrorMessage("Error: Could not authenticate user");
+            session.getRemote().sendString(serializer.toJson(message));
+        } catch (DataAccessException e) {
+            message = new ErrorMessage("Error: Internal error");
+            session.getRemote().sendString(serializer.toJson(message));
+        } catch (InvalidMoveException e) {
+            message = new ErrorMessage("Error: Invalid move sent");
+            session.getRemote().sendString(serializer.toJson(message));
+        }
     }
 }
