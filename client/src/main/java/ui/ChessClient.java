@@ -2,7 +2,6 @@ package ui;
 
 import static ui.EscapeSequences.*;
 
-import chess.ChessBoard;
 import chess.ChessGame;
 import exception.ResponseException;
 import model.GameData;
@@ -11,19 +10,28 @@ import requestobjects.JoinRequest;
 import requestobjects.LoginRequest;
 import requestobjects.RegisterRequest;
 import server.ServerFacade;
+import websocket.NotificationHandler;
+import websocket.messages.Notification;
 
 import java.util.List;
 import java.util.Scanner;
 
-public class ChessClient {
+public class ChessClient implements NotificationHandler {
     private final ServerFacade server;
     private State state = State.SIGNEDOUT;
     Scanner scanner = new Scanner(System.in);
     String authToken;
     List<GameData> games;
+    ChessGame currentGame = null;
+    ChessGame.TeamColor perspective;
 
     public ChessClient(String url) {
         server = new ServerFacade(url);
+    }
+
+    public void notify(Notification notification) {
+        System.out.println(SET_TEXT_COLOR_GREEN + notification.message);
+        printPrompt();
     }
 
     public void run() {
@@ -79,6 +87,7 @@ public class ChessClient {
     private String inGameEval(String line) {
         return switch (line) {
             case "help" -> help();
+            case "redraw" -> printBoard();
             default -> throw new IllegalStateException("Unexpected value: " + line + "Type help for valid commands.");
         };
     }
@@ -175,7 +184,6 @@ public class ChessClient {
         printPrompt();
         String line = scanner.nextLine();
 
-        ChessGame.TeamColor perspective;
         String color;
         if (line.equalsIgnoreCase("w")) {
             perspective = ChessGame.TeamColor.WHITE;
@@ -187,7 +195,7 @@ public class ChessClient {
             throw new IllegalArgumentException("Can't parse input. Accepted inputs are \"W\" or \"B\"");
         }
 
-        ChessBoard board = gameData.game().getBoard();
+        currentGame = gameData.game();
         try {
             server.joinGame(authToken, new JoinRequest(color, gameData.gameID()));
             games = server.listGame(authToken).games();
@@ -195,13 +203,15 @@ public class ChessClient {
             return "Could not join game. "+ e.getMessage().replaceFirst(".*Error: ", "");
         }
 
-        return printBoard(board, perspective);
+        return printBoard();
     }
 
     private String observeGame() {
         GameData gameData = getGameFromUser();
-        ChessBoard board = gameData.game().getBoard();
-        return printBoard(board, ChessGame.TeamColor.WHITE);
+        currentGame = gameData.game();
+        perspective = ChessGame.TeamColor.WHITE;
+        state = State.INGAME;
+        return printBoard();
     }
 
     private GameData getGameFromUser() {
@@ -219,8 +229,8 @@ public class ChessClient {
         }
     }
 
-    private String printBoard(ChessBoard board, ChessGame.TeamColor perspective) {
-        new BoardPrinter(board, perspective).print();
+    private String printBoard() {
+        new BoardPrinter(currentGame.getBoard(), perspective).print();
         return "";
     }
 
