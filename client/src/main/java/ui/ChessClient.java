@@ -120,7 +120,7 @@ public class ChessClient implements NotificationHandler {
 
         try {
             authToken = server.createUser(new RegisterRequest(username, password, email)).authToken();
-            state = State.SIGNEDIN;
+            state.loggedInState = State.LoggedInState.SIGNEDIN;
             return "Successfully registered.";
         } catch (ResponseException e) {
             return "Could not complete registration.";
@@ -137,7 +137,7 @@ public class ChessClient implements NotificationHandler {
 
         try {
             authToken = server.loginUser(new LoginRequest(username, password)).authToken();
-            state = State.SIGNEDIN;
+            state.loggedInState = State.LoggedInState.SIGNEDIN;
             return "Successfully signed in.";
         } catch (ResponseException e) {
             return "Failed to sign in with the given credentials.";
@@ -147,7 +147,7 @@ public class ChessClient implements NotificationHandler {
     private String logout() {
         try {
             server.logoutUser(authToken);
-            state = State.SIGNEDOUT;
+            state.loggedInState = State.LoggedInState.SIGNEDOUT;
             return "Logging out...";
         } catch (ResponseException e) {
             return "Something failed while logging out. Check your connection to the server.";
@@ -160,7 +160,7 @@ public class ChessClient implements NotificationHandler {
         String name = scanner.nextLine();
         try {
             server.createGame(authToken, new CreateRequest(name));
-            games = server.listGame(authToken).games();
+            state.games = server.listGame(authToken).games();
             return "Created game \"" + name + "\"";
         } catch (ResponseException e) {
             return "Failed to create new game";
@@ -169,12 +169,12 @@ public class ChessClient implements NotificationHandler {
 
     private String listGames() {
         try {
-            games = server.listGame(authToken).games();
+            state.games = server.listGame(authToken).games();
             StringBuilder gameStrings = new StringBuilder();
             gameStrings.append("Games\n");
 
-            for (int i = 0; i < games.size(); i++) {
-                GameData game = games.get(i);
+            for (int i = 0; i < state.games.size(); i++) {
+                GameData game = state.games.get(i);
                 String gameString = (i+1) + ": " + game.gameName();
                 if (game.whiteUsername() != null) {gameString += " White: " + game.whiteUsername();}
                 if (game.blackUsername() != null) {gameString += " Black: " + game.blackUsername();}
@@ -198,20 +198,21 @@ public class ChessClient implements NotificationHandler {
 
         String color;
         if (line.equalsIgnoreCase("w")) {
-            perspective = ChessGame.TeamColor.WHITE;
+            state.perspective = ChessGame.TeamColor.WHITE;
             color = "WHITE";
         } else if (line.equalsIgnoreCase("b")) {
-            perspective = ChessGame.TeamColor.BLACK;
+            state.perspective = ChessGame.TeamColor.BLACK;
             color = "BLACK";
         } else {
             throw new IllegalArgumentException("Can't parse input. Accepted inputs are \"W\" or \"B\"");
         }
 
-        currentGame = gameData.game();
-        state = State.INGAME;
+        state.currentGame = gameData.game();
+        state.loggedInState = State.LoggedInState.INGAME;
+        state.currentGameId = gameData.gameID();
         try {
             server.joinGame(authToken, new JoinRequest(color, gameData.gameID()));
-            games = server.listGame(authToken).games();
+            state.games = server.listGame(authToken).games();
             ws.sendCommand(UserGameCommand.CommandType.CONNECT, authToken, gameData.gameID());
         } catch (Exception e) {
             return "Could not join game. "+ e.getMessage().replaceFirst(".*Error: ", "");
@@ -223,10 +224,11 @@ public class ChessClient implements NotificationHandler {
     private String observeGame() {
         try {
             GameData gameData = getGameFromUser();
-            currentGame = gameData.game();
-            perspective = ChessGame.TeamColor.WHITE;
+            state.currentGame = gameData.game();
+            state.perspective = ChessGame.TeamColor.WHITE;
+            state.currentGameId = gameData.gameID();
             ws.sendCommand(UserGameCommand.CommandType.CONNECT, authToken, gameData.gameID());
-            state = State.INGAME;
+            state.loggedInState = State.LoggedInState.INGAME;
             return printBoard();
         } catch (Exception e) {
             return "Could not join game. "+ e.getMessage().replaceFirst(".*Error: ", "");
@@ -235,32 +237,32 @@ public class ChessClient implements NotificationHandler {
 
     private GameData getGameFromUser() {
         try {
-            if (games == null) {
-                games = server.listGame(authToken).games();
+            if (state.games == null) {
+                state.games = server.listGame(authToken).games();
             }
 
             System.out.println("Enter game id");
             printPrompt();
             String line = scanner.nextLine();
-            return games.get(Integer.parseInt(line) - 1);
+            return state.games.get(Integer.parseInt(line) - 1);
         } catch (Exception e) {
             throw new RuntimeException("Could not find game with given id");
         }
     }
 
     private String printBoard() {
-        new BoardPrinter(currentGame.getBoard(), perspective).print();
+        new BoardPrinter(state.currentGame.getBoard(), state.perspective).print();
         return "";
     }
 
     private String help() {
-        if (state == State.SIGNEDOUT) {
+        if (state.loggedInState == State.LoggedInState.SIGNEDOUT) {
             return """
                     Commands
                     login: Log in an existing user
                     register: Register a new user
                     quit: Exit the chess client""";
-        } else if (state == State.SIGNEDIN) {
+        } else if (state.loggedInState == State.LoggedInState.SIGNEDIN) {
             return """
                     Commands
                     logout: Logout and return to the prelogin menu

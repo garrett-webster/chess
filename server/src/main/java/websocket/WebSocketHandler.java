@@ -148,7 +148,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
             gameService.removePlayer(username, command.getGameID());
             connectionManager.remove(session);
-            message = new Notification(username + " Has left the game.");
+            message = new Notification(username + " has left the game.");
             connectionManager.broadcast(session, message, command.getGameID());
         } catch (Exception e) {
         }
