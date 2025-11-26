@@ -62,4 +62,10 @@ public class GameService extends Service{
         daos.gameDao.updateGame(gameID, game);
         return game;
     }
+
+    public void markGameAsInactive(int gameID) throws DataAccessException {
+        ChessGame game = getById(gameID).game();
+        game.isActive = false;
+        daos.gameDao.updateGame(gameID, game);
+    }
 }
