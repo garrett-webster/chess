@@ -12,6 +12,7 @@ import requestobjects.RegisterRequest;
 import server.ServerFacade;
 import websocket.NotificationHandler;
 import websocket.WebSocketFacade;
+import websocket.commands.UserGameCommand;
 import websocket.messages.LoadGame;
 import websocket.messages.Notification;
 
@@ -211,7 +212,7 @@ public class ChessClient implements NotificationHandler {
         try {
             server.joinGame(authToken, new JoinRequest(color, gameData.gameID()));
             games = server.listGame(authToken).games();
-            ws.playGame(authToken, gameData.gameID());
+            ws.sendCommand(UserGameCommand.CommandType.CONNECT, authToken, gameData.gameID());
         } catch (Exception e) {
             return "Could not join game. "+ e.getMessage().replaceFirst(".*Error: ", "");
         }
@@ -220,11 +221,16 @@ public class ChessClient implements NotificationHandler {
     }
 
     private String observeGame() {
-        GameData gameData = getGameFromUser();
-        currentGame = gameData.game();
-        perspective = ChessGame.TeamColor.WHITE;
-        state = State.INGAME;
-        return printBoard();
+        try {
+            GameData gameData = getGameFromUser();
+            currentGame = gameData.game();
+            perspective = ChessGame.TeamColor.WHITE;
+            ws.sendCommand(UserGameCommand.CommandType.CONNECT, authToken, gameData.gameID());
+            state = State.INGAME;
+            return printBoard();
+        } catch (Exception e) {
+            return "Could not join game. "+ e.getMessage().replaceFirst(".*Error: ", "");
+        }
     }
 
     private GameData getGameFromUser() {
