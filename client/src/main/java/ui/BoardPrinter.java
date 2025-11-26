@@ -59,6 +59,7 @@ public class BoardPrinter {
 
     public void print() {
         out.print(SET_TEXT_COLOR_WHITE);
+        out.print("\n");
         SquareColor startingSquareColor = SquareColor.LIGHT;
         for (int i = 0; i < 8; i++) {
             int rowId = perspective == ChessGame.TeamColor.BLACK ? (7-i): i;
@@ -71,6 +72,7 @@ public class BoardPrinter {
             int rowId = perspective == ChessGame.TeamColor.BLACK ? (7-i): i;
             out.print("\u2003" + (char) (rowId + 97) + " ");
         }
+        out.print("\n");
     }
 
     SquareColor printRowOfSquares(ChessPiece[] pieces, SquareColor startingSquareColor, int row) {

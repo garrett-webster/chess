@@ -11,6 +11,8 @@ import requestobjects.LoginRequest;
 import requestobjects.RegisterRequest;
 import server.ServerFacade;
 import websocket.NotificationHandler;
+import websocket.WebSocketFacade;
+import websocket.messages.LoadGame;
 import websocket.messages.Notification;
 
 import java.util.List;
@@ -18,6 +20,7 @@ import java.util.Scanner;
 
 public class ChessClient implements NotificationHandler {
     private final ServerFacade server;
+    private final WebSocketFacade ws;
     private State state = State.SIGNEDOUT;
     Scanner scanner = new Scanner(System.in);
     String authToken;
@@ -25,12 +28,19 @@ public class ChessClient implements NotificationHandler {
     ChessGame currentGame = null;
     ChessGame.TeamColor perspective;
 
-    public ChessClient(String url) {
+    public ChessClient(String url) throws ResponseException {
         server = new ServerFacade(url);
+        ws = new WebSocketFacade(url, this);
     }
 
-    public void notify(Notification notification) {
-        System.out.println(SET_TEXT_COLOR_GREEN + notification.message);
+    public void loadGame(LoadGame message) {
+        currentGame = message.game;
+        printBoard();
+        printPrompt();
+    }
+
+    public void notify(Notification message) {
+        System.out.println(SET_TEXT_COLOR_GREEN + message.message);
         printPrompt();
     }
 
@@ -149,6 +159,7 @@ public class ChessClient implements NotificationHandler {
         String name = scanner.nextLine();
         try {
             server.createGame(authToken, new CreateRequest(name));
+            games = server.listGame(authToken).games();
             return "Created game \"" + name + "\"";
         } catch (ResponseException e) {
             return "Failed to create new game";
@@ -196,14 +207,16 @@ public class ChessClient implements NotificationHandler {
         }
 
         currentGame = gameData.game();
+        state = State.INGAME;
         try {
             server.joinGame(authToken, new JoinRequest(color, gameData.gameID()));
             games = server.listGame(authToken).games();
+            ws.playGame(authToken, gameData.gameID());
         } catch (Exception e) {
             return "Could not join game. "+ e.getMessage().replaceFirst(".*Error: ", "");
         }
 
-        return printBoard();
+        return "";
     }
 
     private String observeGame() {
