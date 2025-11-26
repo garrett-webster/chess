@@ -16,18 +16,14 @@ import websocket.commands.UserGameCommand;
 import websocket.messages.LoadGame;
 import websocket.messages.Notification;
 
-import java.util.List;
 import java.util.Scanner;
 
 public class ChessClient implements NotificationHandler {
     private final ServerFacade server;
     private final WebSocketFacade ws;
-    private State state = State.SIGNEDOUT;
+    private final State state = new State();
     Scanner scanner = new Scanner(System.in);
     String authToken;
-    List<GameData> games;
-    ChessGame currentGame = null;
-    ChessGame.TeamColor perspective;
 
     public ChessClient(String url) throws ResponseException {
         server = new ServerFacade(url);
@@ -35,7 +31,7 @@ public class ChessClient implements NotificationHandler {
     }
 
     public void loadGame(LoadGame message) {
-        currentGame = message.game;
+        state.currentGame = message.game;
         printBoard();
         printPrompt();
     }
@@ -56,11 +52,11 @@ public class ChessClient implements NotificationHandler {
                 if (line.equals("help")) {
                     result = help();
                 } else {
-                    if (state == State.SIGNEDOUT) {
+                    if (state.loggedInState == State.LoggedInState.SIGNEDOUT) {
                         result = signedOutEval(line);
-                    } else if (state == State.SIGNEDIN) {
+                    } else if (state.loggedInState == State.LoggedInState.SIGNEDIN) {
                         result = signedInEval(line);
-                    } else if (state == State.INGAME) {
+                    } else if (state.loggedInState == State.LoggedInState.INGAME) {
                         result = inGameEval(line);
                     } else {
                         result = "Unknown command. Type \"help\" to see valid commands.";
@@ -99,6 +95,7 @@ public class ChessClient implements NotificationHandler {
         return switch (line) {
             case "help" -> help();
             case "redraw" -> printBoard();
+            case "leave" -> leave();
             default -> throw new IllegalStateException("Unexpected value: " + line + "Type help for valid commands.");
         };
     }
@@ -248,6 +245,20 @@ public class ChessClient implements NotificationHandler {
         } catch (Exception e) {
             throw new RuntimeException("Could not find game with given id");
         }
+    }
+
+    public String leave(){
+        try {
+            ws.sendCommand(UserGameCommand.CommandType.LEAVE, authToken, state.currentGameId);
+            state.currentGame = null;
+            state.perspective = null;
+            state.currentGameId = 0;
+            state.loggedInState = State.LoggedInState.SIGNEDIN;
+        } catch (ResponseException e) {
+            return "Could not leave the game. Please try again.";
+        }
+
+        return "";
     }
 
     private String printBoard() {
