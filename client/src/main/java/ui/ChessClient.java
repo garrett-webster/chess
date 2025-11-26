@@ -13,6 +13,7 @@ import server.ServerFacade;
 import websocket.NotificationHandler;
 import websocket.WebSocketFacade;
 import websocket.commands.UserGameCommand;
+import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGame;
 import websocket.messages.Notification;
 
@@ -39,6 +40,10 @@ public class ChessClient implements NotificationHandler {
     public void notify(Notification message) {
         System.out.println(SET_TEXT_COLOR_GREEN + message.message);
         printPrompt();
+    }
+
+    public void error(ErrorMessage message) {
+        System.out.println(SET_TEXT_COLOR_RED + message.errorMessage);
     }
 
     public void run() {

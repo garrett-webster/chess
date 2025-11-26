@@ -5,6 +5,7 @@ import exception.ResponseException;
 import jakarta.websocket.*;
 import jakarta.websocket.Endpoint;
 import websocket.commands.UserGameCommand;
+import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGame;
 import websocket.messages.Notification;
 import websocket.messages.ServerMessage;
@@ -42,6 +43,7 @@ public class WebSocketFacade extends Endpoint {
                     switch (serverMessage.getServerMessageType()) {
                         case LOAD_GAME -> notificationHandler.loadGame(new Gson().fromJson(message, LoadGame.class));
                         case NOTIFICATION -> notificationHandler.notify(new Gson().fromJson(message, Notification.class));
+                        case ERROR -> notificationHandler.error(new Gson().fromJson(message, ErrorMessage.class));
                     }
                 }
             });
