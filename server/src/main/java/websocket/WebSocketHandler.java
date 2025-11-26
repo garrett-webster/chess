@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import dataaccess.exceptions.UserNotValidatedException;
 import io.javalin.websocket.*;
+import model.GameData;
 import org.jetbrains.annotations.NotNull;
 import services.AuthService;
 import services.GameService;
@@ -20,6 +21,7 @@ import websocket.messages.Notification;
 import websocket.messages.ServerMessage;
 
 import java.io.IOException;
+import java.util.Objects;
 
 public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsCloseHandler {
     ConnectionManager connectionManager = new ConnectionManager();
@@ -66,9 +68,9 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         ServerMessage message;
         try {
             authService.validateWithToken(command.getAuthToken());
-            message = new LoadGame(gameService.getById(command.getGameID()));
+            message = new LoadGame(gameService.getById(command.getGameID()).game());
             connectionManager.broadcast(session, new Notification("User " + username + " connected"), command.getGameID());
-        } catch (DataAccessException e) {
+        } catch (DataAccessException | NullPointerException e) {
             message = new ErrorMessage("Error: Could not find a game with the given id");
         } catch (UserNotValidatedException e) {
             message = new ErrorMessage("Error: Could not authenticate user");
@@ -84,8 +86,21 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         ChessMove move = command.getMove();
         try {
             authService.validateWithToken(command.getAuthToken());
-            game = gameService.applyMove(gameService.getById(command.getGameID()), command.getMove(), command.getGameID(), command.getAuthToken());
-            connectionManager.broadcast(null, new LoadGame(game), command.getGameID());
+            GameData gameData = gameService.getById(command.getGameID());
+            game = gameData.game();
+            if (game.getTeamTurn() == ChessGame.TeamColor.WHITE) {
+                if (!Objects.equals(gameData.whiteUsername(), username)) {
+                    throw new InvalidMoveException("Error: Tried to make a move when it is not their turn");
+                }
+            } else {
+                if (!Objects.equals(gameData.blackUsername(), username)) {
+                    throw new InvalidMoveException("Error: Tried to make a move when it is not their turn");
+                }
+            }
+
+            message = new LoadGame(gameService.applyMove(game, command.getMove(), command.getGameID(), command.getAuthToken()));
+
+            connectionManager.broadcast(null, message, command.getGameID());
             connectionManager.broadcast(session, new Notification("User " + username + " made the move " + move), command.getGameID());
         } catch (UserNotValidatedException e) {
             message = new ErrorMessage("Error: Could not authenticate user");
@@ -94,7 +109,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             message = new ErrorMessage("Error: Internal error");
             session.getRemote().sendString(serializer.toJson(message));
         } catch (InvalidMoveException e) {
-            message = new ErrorMessage("Error: Invalid move sent");
+            message = new ErrorMessage(e.getMessage());
             session.getRemote().sendString(serializer.toJson(message));
         }
     }

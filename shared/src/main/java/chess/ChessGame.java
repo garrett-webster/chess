@@ -13,6 +13,7 @@ import java.util.Objects;
 public class ChessGame {
     TeamColor teamTurn;
     ChessBoard board;
+    public boolean isActive = true;
 
     public ChessGame() {
         teamTurn = TeamColor.WHITE;
@@ -88,15 +89,21 @@ public class ChessGame {
 
         Collection<ChessMove> validMoves = validMoves(move.startPosition);
         if (validMoves == null || !validMoves.contains(move)) {
-            throw new InvalidMoveException("Not a valid move");
+            throw new InvalidMoveException("Error: Not a valid move");
         }
 
         board.makeMove(move);
+
+
 
         if (teamTurn == TeamColor.WHITE) {
             teamTurn = TeamColor.BLACK;
         } else {
             teamTurn = TeamColor.WHITE;
+        }
+
+        if (isInStalemate(teamTurn) || isInCheckmate(teamTurn)) {
+            isActive = false;
         }
     }
 
