@@ -54,6 +54,6 @@ public class MemoryGameDao extends GameDao {
         games.put(request.gameID(), newGame);
     }
 
-    public void updateGame(int gameID, ChessGame updateGame) throws DataAccessException {
-    }
+    public void updateGame(int gameID, ChessGame updateGame) throws DataAccessException {}
+    public void removePlayer(int gameID, String whichUsername) throws DataAccessException {}
 }

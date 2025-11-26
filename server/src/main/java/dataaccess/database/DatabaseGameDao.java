@@ -43,6 +43,11 @@ public class DatabaseGameDao extends GameDao {
         executeCommand(sqlStatement, serializedGame, gameID);
     }
 
+    public void removePlayer(int gameID, String whichUsername) throws DataAccessException {
+        String sqlStatement = "UPDATE games SET " + whichUsername + " = null WHERE idgames = ?";
+        executeCommand(sqlStatement, gameID);
+    }
+
     public List<GameData> list() throws DataAccessException {
         List<GameData> games = new ArrayList<>();
         List<Integer> gameIds = getAllIds("SELECT idgames FROM games", "idgames");
