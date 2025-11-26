@@ -101,6 +101,7 @@ public class ChessClient implements NotificationHandler {
             case "help" -> help();
             case "redraw" -> printBoard();
             case "leave" -> leave();
+            case "resign" -> resign();
             default -> throw new IllegalStateException("Unexpected value: " + line + "Type help for valid commands.");
         };
     }
@@ -263,6 +264,15 @@ public class ChessClient implements NotificationHandler {
             return "Could not leave the game. Please try again.";
         }
 
+        return "";
+    }
+
+    public String resign(){
+        try {
+            ws.sendCommand(UserGameCommand.CommandType.RESIGN, authToken, state.currentGameId);
+        } catch (ResponseException e) {
+            return "Could not resign the game. Please try again.";
+        }
         return "";
     }
 

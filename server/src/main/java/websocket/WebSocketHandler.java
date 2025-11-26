@@ -131,7 +131,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             }
 
             gameService.markGameAsInactive(command.getGameID());
-            message = new Notification(username + " Has resigned.");
+            message = new Notification(username + " has resigned.");
             connectionManager.broadcast(null, message, command.getGameID());
         } catch (InvalidMoveException e) {
             message = new ErrorMessage(e.getMessage());
