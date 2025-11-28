@@ -5,12 +5,8 @@ import com.google.gson.Gson;
 import exception.ResponseException;
 import jakarta.websocket.*;
 import jakarta.websocket.Endpoint;
-import websocket.commands.MakeMoveCommand;
-import websocket.commands.UserGameCommand;
-import websocket.messages.ErrorMessage;
-import websocket.messages.LoadGame;
-import websocket.messages.Notification;
-import websocket.messages.ServerMessage;
+import websocket.commands.*;
+import websocket.messages.*;
 
 import java.io.IOException;
 import java.net.URI;
