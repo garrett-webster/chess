@@ -83,7 +83,7 @@ public class ChessClient implements NotificationHandler {
           case "login" -> login();
           case "quit" -> "quit";
           case "register" -> register();
-          default -> throw new IllegalStateException("Unexpected value: " + line + " Type help for valid commands.");
+          default -> throw new IllegalStateException("Unexpected value: " + line + " Type help for valid commands. ");
         };
     }
 
@@ -332,7 +332,6 @@ public class ChessClient implements NotificationHandler {
             ChessPosition position = positions.get(i);
             System.out.println(i+1 + ": " + position);
         }
-        ChessPosition position;
         try {
             System.out.println(message);
             printPrompt();
@@ -363,8 +362,14 @@ public class ChessClient implements NotificationHandler {
                     play game: Join a given game (using the number from "list games")
                     observe game: Watch a given game (using the number from "list games")""";
         } else {
-            // TODO: Implement the help menu for in-game
-            return "You are currently in a game. Placeholder text";
+            return  """
+                    Commands
+                    leave: Leave the game
+                    redraw: Print out the board
+                    highlight moves: Shows all of the valid moves for a selected piece
+                    make move: Select a piece and where to move it to
+                    resign: resign from and end the game
+                    """;
         }
     }
 }
