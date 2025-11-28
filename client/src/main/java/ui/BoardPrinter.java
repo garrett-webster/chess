@@ -12,12 +12,14 @@ import static ui.EscapeSequences.*;
 public class BoardPrinter {
     public enum SquareColor {
         LIGHT,
-        DARK
+        DARK,
+        HIGHLIGHT
     }
 
     private final Map<SquareColor, String> squareColorCodes = Map.of(
             SquareColor.DARK, SET_BG_COLOR_BLACK,
-            SquareColor.LIGHT, SET_BG_COLOR_LIGHT_GREY
+            SquareColor.LIGHT, SET_BG_COLOR_LIGHT_GREY,
+            SquareColor.HIGHLIGHT, SET_BG_COLOR_GREEN
     );
 
     private final Map<ChessPiece.PieceType, String> whiteTypeToString = Map.of(
@@ -50,9 +52,11 @@ public class BoardPrinter {
     PrintStream out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
     private final ChessBoard board;
     private final ChessGame.TeamColor perspective;
-    public BoardPrinter(ChessBoard board, ChessGame.TeamColor perspective, Set<ChessPosition> moves) {
+    private final Set<ChessPosition> highlightedPositions;
+    public BoardPrinter(ChessBoard board, ChessGame.TeamColor perspective, Set<ChessPosition> highlightedPositions) {
         this.board = board;
         this.perspective = perspective;
+        this.highlightedPositions = highlightedPositions;
     }
 
     public void print() {
@@ -81,7 +85,11 @@ public class BoardPrinter {
         out.print(row+1);
         for (int width = 0; width < 8; width++) {
             int colIndex = perspective == ChessGame.TeamColor.WHITE? width: 7-width;
-            out.print(squareColorCodes.get(currentColor));
+            if (highlightedPositions != null && highlightedPositions.contains(new ChessPosition(row + 1, colIndex + 1))) {
+                out.print(squareColorCodes.get(SquareColor.HIGHLIGHT));
+            } else {
+                out.print(squareColorCodes.get(currentColor));
+            }
 
             if (pieces[colIndex] != null){
                 out.print(getPieceString(pieces[colIndex]));
