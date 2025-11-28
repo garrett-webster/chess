@@ -1,12 +1,12 @@
 package passoff.server;
 
-import websocket.messages.ServerMessage;
 import chess.*;
+import websocket.commands.*;
+import websocket.messages.*;
 import org.junit.jupiter.api.*;
 import passoff.model.*;
 import passoff.websocket.*;
 import server.Server;
-import websocket.commands.UserGameCommand;
 
 import java.net.URISyntaxException;
 import java.util.*;
