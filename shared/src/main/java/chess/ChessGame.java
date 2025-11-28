@@ -81,9 +81,14 @@ public class ChessGame {
             for (int j = 0; j < 8; j++) {
                 ChessPosition position = new ChessPosition(i+1, j+1);
                 ChessPiece piece = this.board.getPiece(position);
-                if (piece != null && piece.getTeamColor() == teamColor) {
+                if (teamColor != null) {
+                    if (piece != null && piece.getTeamColor() == teamColor) {
+                        positions.add(position);
+                    }
+                } else if (piece != null){
                     positions.add(position);
                 }
+
             }
         }
 

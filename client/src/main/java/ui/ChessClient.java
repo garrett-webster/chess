@@ -35,7 +35,7 @@ public class ChessClient implements NotificationHandler {
 
     public void loadGame(LoadGame message) {
         state.currentGame = message.game;
-        printBoard();
+        printBoard(null);
         printPrompt();
     }
 
@@ -101,10 +101,11 @@ public class ChessClient implements NotificationHandler {
     private String inGameEval(String line) {
         return switch (line) {
             case "help" -> help();
-            case "redraw" -> printBoard();
+            case "redraw" -> printBoard(null);
             case "leave" -> leave();
             case "resign" -> resign();
             case "make move" -> makeMove();
+            case "highlight moves" -> highlightMoves();
             default -> throw new IllegalStateException("Unexpected value: " + line + "Type help for valid commands.");
         };
     }
@@ -237,7 +238,7 @@ public class ChessClient implements NotificationHandler {
             state.currentGameId = gameData.gameID();
             ws.sendCommand(UserGameCommand.CommandType.CONNECT, authToken, gameData.gameID());
             state.loggedInState = State.LoggedInState.INGAME;
-            return printBoard();
+            return printBoard(null);
         } catch (Exception e) {
             return "Could not join game. "+ e.getMessage().replaceFirst(".*Error: ", "");
         }
@@ -282,20 +283,8 @@ public class ChessClient implements NotificationHandler {
     }
 
     public String makeMove() {
-        var positions = state.currentGame.getPiecePositions(state.perspective);
-        for (int i = 0; i < positions.size(); i++) {
-            ChessPosition position = positions.get(i);
-            System.out.println(i+1 + ": " + position);
-        }
-        ChessPosition position;
-        try {
-            System.out.println("Which piece would you like to move? (Use the number to the left of the piece position)");
-            printPrompt();
-            position = positions.get(Integer.parseInt(scanner.nextLine()) - 1);
-        } catch (Exception e) {
-            return SET_TEXT_COLOR_RED + "Invalid input. Must be one of the numbers printed above.";
-        }
-
+        ChessPosition position = getPosition("Which piece would you like to move?" +
+                " (Use the number to the left of the piece position)", state.perspective);
         ArrayList<ChessMove> moves = new ArrayList<>(state.currentGame.validMoves(position));
         Map<Integer, ChessMove> possibleMoves = new HashMap<>();
         for (int i = 0; i < moves.size(); i++) {
@@ -321,8 +310,40 @@ public class ChessClient implements NotificationHandler {
         return "";
     }
 
-    private String printBoard() {
-        new BoardPrinter(state.currentGame.getBoard(), state.perspective).print();
+    private String highlightMoves() {
+        try {
+            ChessPosition position = getPosition(
+                    "For which piece would you like to  see valid moves? (Use the number to the left of the piece position)",
+                    null
+            );
+            Set<ChessPosition> positions = new HashSet<>();
+            for(ChessMove move: state.currentGame.validMoves(position)) {
+                positions.add(move.getEndPosition());
+            }
+            return printBoard(positions);
+        } catch (IllegalArgumentException e) {
+            return e.getMessage();
+        }
+    }
+
+    private ChessPosition getPosition(String message, ChessGame.TeamColor teamColor) {
+        var positions = state.currentGame.getPiecePositions(teamColor);
+        for (int i = 0; i < positions.size(); i++) {
+            ChessPosition position = positions.get(i);
+            System.out.println(i+1 + ": " + position);
+        }
+        ChessPosition position;
+        try {
+            System.out.println(message);
+            printPrompt();
+            return positions.get(Integer.parseInt(scanner.nextLine()) - 1);
+        } catch (Exception e) {
+            throw new IllegalArgumentException(SET_TEXT_COLOR_RED + "Invalid input. Must be one of the numbers printed above.");
+        }
+    }
+
+    private String printBoard(Set<ChessPosition> positionsToHighlight) {
+        new BoardPrinter(state.currentGame.getBoard(), state.perspective, positionsToHighlight).print();
         return "";
     }
 
@@ -342,6 +363,7 @@ public class ChessClient implements NotificationHandler {
                     play game: Join a given game (using the number from "list games")
                     observe game: Watch a given game (using the number from "list games")""";
         } else {
+            // TODO: Implement the help menu for in-game
             return "You are currently in a game. Placeholder text";
         }
     }

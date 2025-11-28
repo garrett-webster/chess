@@ -1,12 +1,11 @@
 package ui;
 
-import chess.ChessBoard;
-import chess.ChessGame;
-import chess.ChessPiece;
+import chess.*;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.Set;
 
 import static ui.EscapeSequences.*;
 
@@ -51,7 +50,7 @@ public class BoardPrinter {
     PrintStream out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
     private final ChessBoard board;
     private final ChessGame.TeamColor perspective;
-    public BoardPrinter(ChessBoard board, ChessGame.TeamColor perspective) {
+    public BoardPrinter(ChessBoard board, ChessGame.TeamColor perspective, Set<ChessPosition> moves) {
         this.board = board;
         this.perspective = perspective;
     }
