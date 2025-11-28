@@ -34,16 +34,19 @@ public class WebSocketFacade extends Endpoint {
             this.session = container.connectToServer(this, socketURI);
 
             //set message handler
-            this.session.addMessageHandler((MessageHandler.Whole<String>) message -> {
-                ServerMessage serverMessage = new Gson().fromJson(message, ServerMessage.class);
-                if (serverMessage.getServerMessageType() == ServerMessage.ServerMessageType.LOAD_GAME) {
-                    serverMessage = new Gson().fromJson(message, LoadGame.class);
-                }
+            this.session.addMessageHandler(new MessageHandler.Whole<String>() {
+                @Override
+                public void onMessage(String message) {
+                    ServerMessage serverMessage = new Gson().fromJson(message, ServerMessage.class);
+                    if (serverMessage.getServerMessageType() == ServerMessage.ServerMessageType.LOAD_GAME) {
+                        serverMessage = new Gson().fromJson(message, LoadGame.class);
+                    }
 
-                switch (serverMessage.getServerMessageType()) {
-                    case LOAD_GAME -> notificationHandler.loadGame(new Gson().fromJson(message, LoadGame.class));
-                    case NOTIFICATION -> notificationHandler.notify(new Gson().fromJson(message, Notification.class));
-                    case ERROR -> notificationHandler.error(new Gson().fromJson(message, ErrorMessage.class));
+                    switch (serverMessage.getServerMessageType()) {
+                        case LOAD_GAME -> notificationHandler.loadGame(new Gson().fromJson(message, LoadGame.class));
+                        case NOTIFICATION -> notificationHandler.notify(new Gson().fromJson(message, Notification.class));
+                        case ERROR -> notificationHandler.error(new Gson().fromJson(message, ErrorMessage.class));
+                    }
                 }
             });
         } catch (DeploymentException | IOException | URISyntaxException ex) {
