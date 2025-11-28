@@ -75,6 +75,21 @@ public class ChessGame {
         return moves;
     }
 
+    public ArrayList<ChessPosition> getPiecePositions(TeamColor teamColor) {
+        ArrayList<ChessPosition> positions = new ArrayList<>();
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                ChessPosition position = new ChessPosition(i+1, j+1);
+                ChessPiece piece = this.board.getPiece(position);
+                if (piece != null && piece.getTeamColor() == teamColor) {
+                    positions.add(position);
+                }
+            }
+        }
+
+        return positions;
+    }
+
     /**
      * Makes a move in a chess game
      *

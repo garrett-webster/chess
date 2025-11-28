@@ -3,6 +3,8 @@ package ui;
 import static ui.EscapeSequences.*;
 
 import chess.ChessGame;
+import chess.ChessMove;
+import chess.ChessPosition;
 import exception.ResponseException;
 import model.GameData;
 import requestobjects.CreateRequest;
@@ -17,7 +19,7 @@ import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGame;
 import websocket.messages.Notification;
 
-import java.util.Scanner;
+import java.util.*;
 
 public class ChessClient implements NotificationHandler {
     private final ServerFacade server;
@@ -102,6 +104,7 @@ public class ChessClient implements NotificationHandler {
             case "redraw" -> printBoard();
             case "leave" -> leave();
             case "resign" -> resign();
+            case "make move" -> makeMove();
             default -> throw new IllegalStateException("Unexpected value: " + line + "Type help for valid commands.");
         };
     }
@@ -141,6 +144,7 @@ public class ChessClient implements NotificationHandler {
         try {
             authToken = server.loginUser(new LoginRequest(username, password)).authToken();
             state.loggedInState = State.LoggedInState.SIGNEDIN;
+            state.username = username;
             return "Successfully signed in.";
         } catch (ResponseException e) {
             return "Failed to sign in with the given credentials.";
@@ -210,9 +214,6 @@ public class ChessClient implements NotificationHandler {
             throw new IllegalArgumentException("Can't parse input. Accepted inputs are \"W\" or \"B\"");
         }
 
-        state.currentGame = gameData.game();
-        state.loggedInState = State.LoggedInState.INGAME;
-        state.currentGameId = gameData.gameID();
         try {
             server.joinGame(authToken, new JoinRequest(color, gameData.gameID()));
             state.games = server.listGame(authToken).games();
@@ -220,6 +221,10 @@ public class ChessClient implements NotificationHandler {
         } catch (Exception e) {
             return "Could not join game. "+ e.getMessage().replaceFirst(".*Error: ", "");
         }
+
+        state.currentGame = gameData.game();
+        state.loggedInState = State.LoggedInState.INGAME;
+        state.currentGameId = gameData.gameID();
 
         return "";
     }
@@ -267,11 +272,51 @@ public class ChessClient implements NotificationHandler {
         return "";
     }
 
-    public String resign(){
+    public String resign() {
         try {
             ws.sendCommand(UserGameCommand.CommandType.RESIGN, authToken, state.currentGameId);
         } catch (ResponseException e) {
             return "Could not resign the game. Please try again.";
+        }
+        return "";
+    }
+
+    public String makeMove() {
+        var positions = state.currentGame.getPiecePositions(state.perspective);
+        for (int i = 0; i < positions.size(); i++) {
+            ChessPosition position = positions.get(i);
+            System.out.println(i+1 + ": " + position);
+        }
+        ChessPosition position;
+        try {
+            System.out.println("Which piece would you like to move? (Use the number to the left of the piece position)");
+            printPrompt();
+            position = positions.get(Integer.parseInt(scanner.nextLine()) - 1);
+        } catch (Exception e) {
+            return SET_TEXT_COLOR_RED + "Invalid input. Must be one of the numbers printed above.";
+        }
+
+        ArrayList<ChessMove> moves = new ArrayList<>(state.currentGame.validMoves(position));
+        Map<Integer, ChessMove> possibleMoves = new HashMap<>();
+        for (int i = 0; i < moves.size(); i++) {
+            ChessMove move = moves.get(i);
+            System.out.println(i+1 + ": " + move.getEndPosition());
+            possibleMoves.put(i, move);
+        }
+
+        ChessMove selectedMove;
+        try {
+            System.out.println("To which square do you want to move? (Use the number to the left of the piece position)");
+            printPrompt();
+            selectedMove = possibleMoves.get(Integer.parseInt(scanner.nextLine()) - 1);
+        } catch (Exception e) {
+            return SET_TEXT_COLOR_RED + "Invalid input. Must be one of the numbers printed above.";
+        }
+
+        try {
+            ws.sendMakeMoveCommand(authToken, state.currentGameId, selectedMove);
+        } catch (ResponseException e) {
+            return "Could not make move. Please try again.";
         }
         return "";
     }

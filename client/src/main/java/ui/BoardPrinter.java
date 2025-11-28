@@ -52,7 +52,6 @@ public class BoardPrinter {
     private final ChessBoard board;
     private final ChessGame.TeamColor perspective;
     public BoardPrinter(ChessBoard board, ChessGame.TeamColor perspective) {
-        board.resetBoard();
         this.board = board;
         this.perspective = perspective;
     }
@@ -62,7 +61,7 @@ public class BoardPrinter {
         out.print("\n");
         SquareColor startingSquareColor = SquareColor.LIGHT;
         for (int i = 0; i < 8; i++) {
-            int rowId = perspective == ChessGame.TeamColor.BLACK ? (7-i): i;
+            int rowId = perspective == ChessGame.TeamColor.BLACK ? i: (7-i);
 
             ChessPiece[] row = board.squares[rowId];
             startingSquareColor = printRowOfSquares(row, startingSquareColor, rowId);
@@ -80,12 +79,13 @@ public class BoardPrinter {
         SquareColor currentColor = startingSquareColor;
 
         out.print(RESET_BG_COLOR);
-        out.print((8-row));
+        out.print(row+1);
         for (int width = 0; width < 8; width++) {
+            int colIndex = perspective == ChessGame.TeamColor.WHITE? width: 7-width;
             out.print(squareColorCodes.get(currentColor));
 
-            if (pieces[width] != null){
-                out.print(getPieceString(pieces[width]));
+            if (pieces[colIndex] != null){
+                out.print(getPieceString(pieces[colIndex]));
             } else {
                 out.print(EMPTY);
             }

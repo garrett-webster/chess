@@ -103,6 +103,15 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
             connectionManager.broadcast(null, message, command.getGameID());
             connectionManager.broadcast(session, new Notification("User " + username + " made the move " + move), command.getGameID());
+
+            if(game.isInStalemate(game.getTeamTurn())) {
+                connectionManager.broadcast(null, new Notification("Game over: Stalemate"), command.getGameID());
+            }
+            if(game.isInCheckmate(game.getTeamTurn())) {
+                connectionManager.broadcast(null, new Notification("Game over: Checkmate"), command.getGameID());
+            } else if(game.isInCheckmate(game.getTeamTurn())) {
+                connectionManager.broadcast(null, new Notification("Check!"), command.getGameID());
+            }
         } catch (UserNotValidatedException e) {
             message = new ErrorMessage("Error: Could not authenticate user");
             session.getRemote().sendString(serializer.toJson(message));

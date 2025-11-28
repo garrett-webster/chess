@@ -18,6 +18,7 @@ public class State {
     public ChessGame currentGame = null;
     public int currentGameId = 0;
     public ChessGame.TeamColor perspective = null;
+    public String username = null;
 
     public State() {
         this.loggedInState = LoggedInState.SIGNEDOUT;
