@@ -4,6 +4,7 @@ import static ui.EscapeSequences.*;
 
 import chess.ChessGame;
 import chess.ChessMove;
+import chess.ChessPiece;
 import chess.ChessPosition;
 import exception.ResponseException;
 import model.GameData;
@@ -298,6 +299,31 @@ public class ChessClient implements NotificationHandler {
             System.out.println("To which square do you want to move? (Use the number to the left of the piece position)");
             printPrompt();
             selectedMove = possibleMoves.get(Integer.parseInt(scanner.nextLine()) - 1);
+
+            if ((selectedMove.getEndPosition().getRow() == 1 || selectedMove.getEndPosition().getRow() == 8) &&
+                    state.currentGame.getBoard().getPiece(new ChessPosition(selectedMove.getStartPosition().getRow(),
+                            selectedMove.getEndPosition().getColumn())).getPieceType() == ChessPiece.PieceType.PAWN) {
+                try {
+                    System.out.println("Which type would you like to promote to?");
+                    System.out.println("1: Queen");
+                    System.out.println("2: Rook");
+                    System.out.println("3: Bishop");
+                    System.out.println("4: Knight");
+                    printPrompt();
+
+                    Map<Integer, ChessPiece.PieceType> intToType = Map.of(
+                            1, ChessPiece.PieceType.QUEEN,
+                            2, ChessPiece.PieceType.ROOK,
+                            3, ChessPiece.PieceType.BISHOP,
+                            4, ChessPiece.PieceType.KNIGHT
+                    );
+                    ChessPiece.PieceType type = intToType.get(Integer.parseInt(scanner.nextLine()));
+
+                    selectedMove.setPromotionPiece(type);
+                } catch (Exception e) {
+                    throw new IllegalArgumentException(SET_TEXT_COLOR_RED + "Invalid input. Must be one of the numbers printed above.");
+                }
+            }
         } catch (Exception e) {
             return SET_TEXT_COLOR_RED + "Invalid input. Must be one of the numbers printed above.";
         }
