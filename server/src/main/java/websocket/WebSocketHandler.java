@@ -109,7 +109,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             }
             if(game.isInCheckmate(game.getTeamTurn())) {
                 connectionManager.broadcast(null, new Notification("Game over: Checkmate"), command.getGameID());
-            } else if(game.isInCheckmate(game.getTeamTurn())) {
+            } else if(game.isInCheck(game.getTeamTurn())) {
                 connectionManager.broadcast(null, new Notification("Check!"), command.getGameID());
             }
         } catch (UserNotValidatedException e) {

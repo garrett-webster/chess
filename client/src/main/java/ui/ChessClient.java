@@ -276,7 +276,12 @@ public class ChessClient implements NotificationHandler {
 
     public String resign() {
         try {
-            ws.sendCommand(UserGameCommand.CommandType.RESIGN, authToken, state.currentGameId);
+            System.out.println("Are you sure you would like to resign? Type Y to confirm.");
+            String line = scanner.nextLine().toLowerCase();
+
+            if (line.equals("y")) {
+                ws.sendCommand(UserGameCommand.CommandType.RESIGN, authToken, state.currentGameId);
+            }
         } catch (ResponseException e) {
             return "Could not resign the game. Please try again.";
         }
